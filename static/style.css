@@ -349,7 +349,11 @@ code {
 
 @media (max-width: 600px) {
   .container {
-    padding: 2rem 1rem 1.5rem;
+    padding: 1.5rem 1rem 1.5rem;
+  }
+
+  .header {
+    margin-bottom: 1.5rem;
   }
 
   .card {
@@ -372,26 +376,6 @@ code {
 
   .add-btn {
     flex: 0 0 2rem;
-  }
-
-  .footer-table {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .footer-route {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-  }
-
-  .footer-sep {
-    display: none;
-  }
-
-  .footer-route > span:last-child {
-    padding-left: 0.5rem;
   }
 }
 
@@ -455,15 +439,17 @@ select:disabled {
 }
 
 .footer-table {
-  display: grid;
-  grid-template-columns: auto auto 1fr;
-  gap: 0.3rem 0.6rem;
-  align-items: baseline;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
   margin-bottom: 1rem;
 }
 
 .footer-route {
-  display: contents;
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  flex-wrap: wrap;
 }
 
 .footer-route code {
@@ -484,7 +470,7 @@ select:disabled {
   font-size: 0.65rem;
 }
 
-.footer-route > span:last-child {
+.footer-desc {
   color: var(--text-dim);
   font-size: 0.72rem;
 }

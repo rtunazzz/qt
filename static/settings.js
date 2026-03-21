@@ -235,7 +235,7 @@ function renderFooter() {
     html += `<div class="footer-route">`;
     html += `<code>${base}${suffix}</code>`;
     html += `<span class="footer-sep">\u2192</span>`;
-    html += `<span>${r.desc}</span>`;
+    html += `<span class="footer-desc">${r.desc}</span>`;
     html += `</div>`;
   }
   html += '</div>';
