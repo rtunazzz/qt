@@ -17,18 +17,55 @@ function tryImport() {
   const param = new URLSearchParams(window.location.search).get("c");
   if (!param) return false;
 
+  let prefs;
   try {
-    const prefs = JSON.parse(atob(param));
-    if (!confirm("Import these settings? This will replace your current configuration.")) {
-      window.history.replaceState({}, "", "/settings");
-      return false;
-    }
-    writePrefs(prefs);
-    window.location.replace("/settings");
-    return true;
+    prefs = JSON.parse(atob(param));
   } catch {
     return false;
   }
+
+  const banner = document.createElement("div");
+  banner.className = "import-banner";
+  banner.innerHTML = `
+    <span class="import-text">Import shared settings? This will replace your current config.</span>
+    <div class="import-actions">
+      <button class="import-accept" id="import-accept">Import</button>
+      <button class="import-decline" id="import-decline">Cancel</button>
+    </div>`;
+  document.body.prepend(banner);
+  requestAnimationFrame(() => banner.classList.add("visible"));
+
+  document.getElementById("import-accept").addEventListener("click", () => {
+    writePrefs(prefs);
+    window.location.replace("/settings");
+  });
+
+  document.getElementById("import-decline").addEventListener("click", () => {
+    banner.classList.remove("visible");
+    setTimeout(() => banner.remove(), 300);
+    window.history.replaceState({}, "", "/settings");
+  });
+
+  return false;
+}
+
+function copyText(text) {
+  if (navigator.clipboard?.writeText) {
+    return navigator.clipboard.writeText(text).catch(() => copyFallback(text));
+  }
+  return copyFallback(text);
+}
+
+function copyFallback(text) {
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.position = "fixed";
+  ta.style.opacity = "0";
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand("copy");
+  document.body.removeChild(ta);
+  return Promise.resolve();
 }
 
 function initExport() {
@@ -36,7 +73,7 @@ function initExport() {
   btn.addEventListener("click", () => {
     const encoded = btoa(JSON.stringify(currentPrefs));
     const url = `${window.location.origin}/settings?c=${encoded}`;
-    navigator.clipboard.writeText(url).then(() => {
+    copyText(url).then(() => {
       btn.textContent = "Copied!";
       btn.classList.add("copied");
       setTimeout(() => {
