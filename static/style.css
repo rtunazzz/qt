@@ -449,11 +449,6 @@ select:disabled {
   color: var(--accent);
 }
 
-.footer-sep {
-  color: var(--text-dim);
-  font-size: 0.65rem;
-}
-
 .footer-desc {
   color: var(--text-dim);
   font-size: 0.72rem;

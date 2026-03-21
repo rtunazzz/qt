@@ -195,10 +195,10 @@ function renderFooter() {
 
   const base = `${host}/<span class="dim">{chain}</span>/<span class="dim">{token}</span>`;
   const routes = [
-    { suffix: "", desc: "default action (trade)" },
-    { suffix: "/trade", desc: "trading platform" },
-    { suffix: "/chart", desc: "charting tool" },
-    { suffix: "/explore", desc: "block explorer" },
+    { suffix: "", desc: "trade (default)" },
+    { suffix: "/trade", desc: "trade" },
+    { suffix: "/chart", desc: "chart" },
+    { suffix: "/explore", desc: "explore" },
   ];
 
   let html = '<div class="footer-title">Usage</div>';
@@ -207,8 +207,7 @@ function renderFooter() {
     const suffix = r.suffix ? `<span class="accent">${r.suffix}</span>` : "";
     html += `<div class="footer-route">`;
     html += `<code>${base}${suffix}</code>`;
-    html += `<span class="footer-sep">\u2192</span>`;
-    html += `<span class="footer-desc">${r.desc}</span>`;
+    html += `<span class="footer-desc">\u2192 ${r.desc}</span>`;
     html += `</div>`;
   }
   html += '</div>';
