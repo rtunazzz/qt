@@ -407,6 +407,41 @@ select:disabled {
   opacity: 0.5;
 }
 
+/* --- Export --- */
+
+.export-row {
+  margin-top: 0.5rem;
+  animation: fadeUp 0.5s ease both;
+  animation-delay: calc(var(--i) * 0.07s);
+}
+
+.export-btn {
+  width: 100%;
+  background: none;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  padding: 0.6rem 1.5rem;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.export-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.export-btn.copied {
+  border-color: var(--accent);
+  color: #050505;
+  background: var(--accent);
+}
+
 /* --- Footer --- */
 
 .footer {

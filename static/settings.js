@@ -1,13 +1,50 @@
 let currentPrefs;
 
 function initSettings() {
+  if (tryImport()) return;
+
   currentPrefs = readPrefs();
   const form = document.getElementById("settings-form");
 
   renderEcosystemDefaults(form, currentPrefs);
   renderOverrides();
   initAddOverride();
+  initExport();
   renderFooter();
+}
+
+function tryImport() {
+  const param = new URLSearchParams(window.location.search).get("c");
+  if (!param) return false;
+
+  try {
+    const prefs = JSON.parse(atob(param));
+    if (!confirm("Import these settings? This will replace your current configuration.")) {
+      window.history.replaceState({}, "", "/settings");
+      return false;
+    }
+    writePrefs(prefs);
+    window.location.replace("/settings");
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function initExport() {
+  const btn = document.getElementById("export-btn");
+  btn.addEventListener("click", () => {
+    const encoded = btoa(JSON.stringify(currentPrefs));
+    const url = `${window.location.origin}/settings?c=${encoded}`;
+    navigator.clipboard.writeText(url).then(() => {
+      btn.textContent = "Copied!";
+      btn.classList.add("copied");
+      setTimeout(() => {
+        btn.textContent = "Export";
+        btn.classList.remove("copied");
+      }, 1500);
+    });
+  });
 }
 
 function saveCurrentPrefs() {
