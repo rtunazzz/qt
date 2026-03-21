@@ -180,6 +180,7 @@ label {
   letter-spacing: 0.06em;
   white-space: nowrap;
   flex-shrink: 0;
+  width: 5.5rem;
 }
 
 .select-wrap {
@@ -340,6 +341,36 @@ code {
 
 .add-override-row .select-wrap {
   flex: 1;
+}
+
+@media (max-width: 600px) {
+  .add-override-row {
+    flex-wrap: wrap;
+  }
+
+  .add-override-row .select-wrap {
+    flex: 1 1 calc(50% - 0.5rem);
+    min-width: 0;
+  }
+
+  .add-btn {
+    flex: 0 0 2rem;
+  }
+
+  .footer-table {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+
+  .footer-route {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .footer-sep {
+    display: none;
+  }
 }
 
 .add-btn {

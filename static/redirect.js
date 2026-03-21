@@ -29,7 +29,7 @@ function parsePath() {
 function redirect() {
   const route = parsePath();
   if (!route) {
-    window.location.replace("/");
+    window.location.replace("/settings");
     return;
   }
 
@@ -38,13 +38,13 @@ function redirect() {
   const platformId = resolve(prefs, route.chain, action);
 
   if (!platformId) {
-    window.location.replace("/");
+    window.location.replace("/settings");
     return;
   }
 
   const platform = PLATFORM_MAP[platformId];
   if (!platform) {
-    window.location.replace("/");
+    window.location.replace("/settings");
     return;
   }
 
