@@ -214,25 +214,31 @@ function renderFooter() {
 
   const container = document.getElementById("footer-routes");
 
+  const base = `${host}/<span class="dim">{chain}</span>/<span class="dim">{token}</span>`;
   const routes = [
-    { path: "/{chain}/{token}", desc: "redirect using default action (trade)" },
-    { path: "/{chain}/{token}/trade", desc: "open in trading platform" },
-    { path: "/{chain}/{token}/chart", desc: "open in charting tool" },
-    { path: "/{chain}/{token}/explore", desc: "open in block explorer" },
+    { suffix: "", desc: "default action (trade)" },
+    { suffix: "/trade", desc: "trading platform" },
+    { suffix: "/chart", desc: "charting tool" },
+    { suffix: "/explore", desc: "block explorer" },
   ];
-
-  const chains = Object.entries(CHAINS).map(([id, c]) => `${id} (${c.name})`).join(", ");
 
   let html = '<div class="footer-title">Usage</div>';
   html += '<div class="footer-table">';
   for (const r of routes) {
+    const suffix = r.suffix ? `<span class="accent">${r.suffix}</span>` : "";
     html += `<div class="footer-route">`;
-    html += `<code>${host}${r.path}</code>`;
+    html += `<code>${base}${suffix}</code>`;
+    html += `<span class="footer-sep">\u2192</span>`;
     html += `<span>${r.desc}</span>`;
     html += `</div>`;
   }
   html += '</div>';
-  html += `<div class="footer-chains">Supported chains: <code>${chains}</code></div>`;
+
+  html += '<div class="footer-chains"><span>Chains</span>';
+  for (const [id, c] of Object.entries(CHAINS)) {
+    html += `<code class="chain-tag">${id}</code>`;
+  }
+  html += '</div>';
 
   container.innerHTML = html;
 }

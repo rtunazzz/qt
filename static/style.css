@@ -442,46 +442,68 @@ select:disabled {
 
 .footer-title {
   font-family: var(--mono);
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 500;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  margin-bottom: 0.6rem;
-}
-
-.footer-table {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
   margin-bottom: 0.75rem;
 }
 
-.footer-route {
-  display: flex;
+.footer-table {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  gap: 0.3rem 0.6rem;
   align-items: baseline;
-  gap: 0.75rem;
-  font-size: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.footer-route {
+  display: contents;
 }
 
 .footer-route code {
   font-size: 0.7rem;
   white-space: nowrap;
-  flex-shrink: 0;
 }
 
-.footer-route span {
+.footer-route code .dim {
+  color: var(--text-dim);
+}
+
+.footer-route code .accent {
+  color: var(--accent);
+}
+
+.footer-sep {
+  color: var(--text-dim);
+  font-size: 0.65rem;
+}
+
+.footer-route > span:last-child {
   color: var(--text-dim);
   font-size: 0.72rem;
 }
 
 .footer-chains {
-  font-size: 0.72rem;
-  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
 }
 
-.footer-chains code {
+.footer-chains > span {
+  font-family: var(--mono);
   font-size: 0.68rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-right: 0.2rem;
+}
+
+.chain-tag {
+  font-size: 0.68rem;
+  padding: 0.1rem 0.4rem;
 }
 
 /* --- Animations --- */
