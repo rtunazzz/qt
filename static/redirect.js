@@ -28,28 +28,17 @@ function parsePath() {
 
 function redirect() {
   const route = parsePath();
-  if (!route) {
-    window.location.replace("/");
-    return;
-  }
+  if (!route) return;
 
   const prefs = readPrefs();
   const action = route.action || "trade";
   const platformId = resolve(prefs, route.chain, action);
-
-  if (!platformId) {
-    window.location.replace("/");
-    return;
-  }
+  if (!platformId) return;
 
   const platform = PLATFORM_MAP[platformId];
-  if (!platform) {
-    window.location.replace("/");
-    return;
-  }
+  if (!platform) return;
 
-  const url = platform.buildUrl(route.chain, route.token);
-  window.location.replace(url);
+  window.location.replace(platform.buildUrl(route.chain, route.token));
 }
 
 redirect();

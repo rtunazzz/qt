@@ -10,7 +10,7 @@ jobs:
       - name: Prepare deploy directory
         run: |
           mkdir -p dist
-          cp -r index.html redirect.html favicon.svg _redirects static settings assets SKILL.md dist/
+          cp -r index.html favicon.svg _redirects static settings assets SKILL.md dist/
       - uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
