@@ -267,26 +267,10 @@ code {
   min-width: 0;
 }
 
-.override-chain {
-  font-family: var(--mono);
+.badge.sm {
   font-size: 0.68rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
   padding: 0.1rem 0.4rem;
-  border: 1px solid var(--border);
-  color: var(--text-muted);
   flex-shrink: 0;
-}
-
-.override-chain.sol {
-  color: var(--sol);
-  border-color: rgba(153, 69, 255, 0.25);
-}
-
-.override-chain.evm {
-  color: var(--evm);
-  border-color: rgba(98, 126, 234, 0.25);
 }
 
 .override-action {

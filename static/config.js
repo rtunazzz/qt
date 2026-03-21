@@ -12,11 +12,9 @@ const CHAIN_SLUGS = {
   birdeye: { sol: "solana", eth: "ethereum", base: "base", bsc: "bsc" },
   uniswap: { eth: "ethereum", base: "base", bsc: "bnb" },
   "1inch": { eth: "1", base: "8453", bsc: "56" },
-  defined: { sol: "sol", eth: "eth", base: "base", bsc: "bsc" },
 };
 
 const PLATFORMS = [
-  // --- SOL Trading ---
   {
     id: "jupiter",
     name: "Jupiter",
@@ -53,7 +51,6 @@ const PLATFORMS = [
     buildUrl: (chain, token) => `https://t.me/BloomSolana_bot?start=ref_rtuna_ca_${token}`,
   },
 
-  // --- EVM Trading ---
   {
     id: "uniswap",
     name: "Uniswap",
@@ -118,7 +115,6 @@ const PLATFORMS = [
     buildUrl: (chain, token) => `https://t.me/BloomEVMbot?start=ref_tuna_ca_${token}`,
   },
 
-  // --- Explorers ---
   {
     id: "solscan",
     name: "Solscan",
@@ -144,7 +140,6 @@ const PLATFORMS = [
     buildUrl: (chain, token) => `https://explorer.blockscout.com/address/${token}`,
   },
 
-  // --- Charting (cross-chain) ---
   {
     id: "dexscreener",
     name: "DexScreener",
@@ -178,7 +173,7 @@ const PLATFORMS = [
     name: "Defined",
     category: "chart",
     chains: ["sol", "eth", "base", "bsc"],
-    buildUrl: (chain, token) => `https://www.defined.fi/${CHAIN_SLUGS.defined[chain] || chain}/${token}`,
+    buildUrl: (chain, token) => `https://www.defined.fi/${chain}/${token}`,
   },
 ];
 

@@ -31,11 +31,12 @@ function saveCurrentPrefs() {
 
 function renderEcosystemDefaults(form, prefs) {
   for (const eco of ["sol", "evm"]) {
+    const chains = eco === "sol" ? ["sol"] : ["eth", "base", "bsc"];
+
     for (const action of ACTIONS) {
       const select = form.querySelector(`#${eco}-${action}`);
       if (!select) continue;
 
-      const chains = eco === "sol" ? ["sol"] : ["eth", "base", "bsc"];
       const platforms = new Map();
       for (const chain of chains) {
         for (const p of getPlatformsForChain(chain, action)) {
@@ -57,73 +58,64 @@ function renderEcosystemDefaults(form, prefs) {
   }
 }
 
+function removeOverride(chainId, action) {
+  delete currentPrefs.overrides[chainId][action];
+  if (!Object.keys(currentPrefs.overrides[chainId]).length) {
+    delete currentPrefs.overrides[chainId];
+  }
+  saveCurrentPrefs();
+  renderOverrides();
+}
+
 function renderOverrides() {
   const list = document.getElementById("overrides-list");
-  list.innerHTML = "";
-
   const overrides = currentPrefs.overrides || {};
-  let hasAny = false;
+  const items = [];
 
   for (const [chainId, actions] of Object.entries(overrides)) {
     const chain = CHAINS[chainId];
     if (!chain) continue;
-
     for (const [action, platformId] of Object.entries(actions)) {
       const platform = PLATFORM_MAP[platformId];
       if (!platform) continue;
-      hasAny = true;
-
-      const row = document.createElement("div");
-      row.className = "override-item";
-
-      const info = document.createElement("div");
-      info.className = "override-info";
-
-      const chainBadge = document.createElement("span");
-      chainBadge.className = `override-chain ${chain.ecosystem}`;
-      chainBadge.textContent = chain.name;
-
-      const actionLabel = document.createElement("span");
-      actionLabel.className = "override-action";
-      actionLabel.textContent = action;
-
-      const arrow = document.createElement("span");
-      arrow.className = "override-arrow";
-      arrow.textContent = "\u2192";
-
-      const platformLabel = document.createElement("span");
-      platformLabel.className = "override-platform";
-      platformLabel.textContent = platform.name;
-
-      info.appendChild(chainBadge);
-      info.appendChild(actionLabel);
-      info.appendChild(arrow);
-      info.appendChild(platformLabel);
-
-      const removeBtn = document.createElement("button");
-      removeBtn.type = "button";
-      removeBtn.className = "remove-btn";
-      removeBtn.textContent = "\u00d7";
-      removeBtn.addEventListener("click", () => {
-        delete currentPrefs.overrides[chainId][action];
-        if (!Object.keys(currentPrefs.overrides[chainId]).length) {
-          delete currentPrefs.overrides[chainId];
-        }
-        saveCurrentPrefs();
-        renderOverrides();
-      });
-
-      row.appendChild(info);
-      row.appendChild(removeBtn);
-      list.appendChild(row);
+      items.push({ chainId, chain, action, platform });
     }
   }
 
-  if (!hasAny) {
-    const empty = document.createElement("div");
-    empty.className = "override-empty";
-    empty.textContent = "No overrides configured";
-    list.appendChild(empty);
+  if (!items.length) {
+    list.innerHTML = '<div class="override-empty">No overrides configured</div>';
+    return;
+  }
+
+  list.innerHTML = items.map(({ chainId, chain, action, platform }) =>
+    `<div class="override-item">
+      <div class="override-info">
+        <span class="badge sm ${chain.ecosystem}">${chain.name}</span>
+        <span class="override-action">${action}</span>
+        <span class="override-arrow">\u2192</span>
+        <span class="override-platform">${platform.name}</span>
+      </div>
+      <button type="button" class="remove-btn" data-chain="${chainId}" data-action="${action}">\u00d7</button>
+    </div>`
+  ).join("");
+
+  list.querySelectorAll(".remove-btn").forEach((btn) => {
+    btn.addEventListener("click", () => removeOverride(btn.dataset.chain, btn.dataset.action));
+  });
+}
+
+function resetSelect(select, placeholder, disabled = true) {
+  select.innerHTML = `<option value="">${placeholder}</option>`;
+  select.disabled = disabled;
+}
+
+function populateSelect(select, items) {
+  resetSelect(select, select.options[0]?.textContent || "...", false);
+  for (const { value, label } of items) {
+    const opt = document.createElement("option");
+    opt.value = value;
+    opt.textContent = label;
+    select.appendChild(opt);
   }
 }
 
@@ -133,55 +125,43 @@ function initAddOverride() {
   const platformSelect = document.getElementById("add-platform");
   const addBtn = document.getElementById("add-btn");
 
-  chainSelect.innerHTML = '<option value="">Chain...</option>';
-  for (const [id, chain] of Object.entries(CHAINS)) {
-    const opt = document.createElement("option");
-    opt.value = id;
-    opt.textContent = chain.name;
-    chainSelect.appendChild(opt);
+  function resetForm() {
+    chainSelect.value = "";
+    resetSelect(actionSelect, "Action...");
+    resetSelect(platformSelect, "Platform...");
+    addBtn.disabled = true;
+    addBtn.classList.remove("pending");
   }
 
+  populateSelect(chainSelect, Object.entries(CHAINS).map(([id, c]) => ({ value: id, label: c.name })));
+
   chainSelect.addEventListener("change", () => {
-    const chain = chainSelect.value;
-    actionSelect.innerHTML = '<option value="">Action...</option>';
-    platformSelect.innerHTML = '<option value="">Platform...</option>';
-    platformSelect.disabled = true;
+    resetSelect(platformSelect, "Platform...");
     addBtn.disabled = true;
 
-    if (!chain) {
-      actionSelect.disabled = true;
+    if (!chainSelect.value) {
+      resetSelect(actionSelect, "Action...");
       return;
     }
 
-    actionSelect.disabled = false;
-    for (const action of ACTIONS) {
-      if (getPlatformsForChain(chain, action).length) {
-        const opt = document.createElement("option");
-        opt.value = action;
-        opt.textContent = action.charAt(0).toUpperCase() + action.slice(1);
-        actionSelect.appendChild(opt);
-      }
-    }
+    populateSelect(actionSelect,
+      ACTIONS.filter((a) => getPlatformsForChain(chainSelect.value, a).length)
+        .map((a) => ({ value: a, label: a.charAt(0).toUpperCase() + a.slice(1) }))
+    );
   });
 
   actionSelect.addEventListener("change", () => {
-    const chain = chainSelect.value;
-    const action = actionSelect.value;
-    platformSelect.innerHTML = '<option value="">Platform...</option>';
     addBtn.disabled = true;
 
-    if (!action) {
-      platformSelect.disabled = true;
+    if (!actionSelect.value) {
+      resetSelect(platformSelect, "Platform...");
       return;
     }
 
-    platformSelect.disabled = false;
-    for (const p of getPlatformsForChain(chain, action)) {
-      const opt = document.createElement("option");
-      opt.value = p.id;
-      opt.textContent = p.name;
-      platformSelect.appendChild(opt);
-    }
+    populateSelect(platformSelect,
+      getPlatformsForChain(chainSelect.value, actionSelect.value)
+        .map((p) => ({ value: p.id, label: p.name }))
+    );
   });
 
   platformSelect.addEventListener("change", () => {
@@ -200,14 +180,7 @@ function initAddOverride() {
     if (!currentPrefs.overrides[chain]) currentPrefs.overrides[chain] = {};
     currentPrefs.overrides[chain][action] = platform;
 
-    chainSelect.value = "";
-    actionSelect.innerHTML = '<option value="">Action...</option>';
-    actionSelect.disabled = true;
-    platformSelect.innerHTML = '<option value="">Platform...</option>';
-    platformSelect.disabled = true;
-    addBtn.disabled = true;
-    addBtn.classList.remove("pending");
-
+    resetForm();
     saveCurrentPrefs();
     renderOverrides();
   });
@@ -241,7 +214,7 @@ function renderFooter() {
   html += '</div>';
 
   html += '<div class="footer-chains"><span>Chains</span>';
-  for (const [id, c] of Object.entries(CHAINS)) {
+  for (const id of Object.keys(CHAINS)) {
     html += `<code class="chain-tag">${id}</code>`;
   }
   html += '</div>';
