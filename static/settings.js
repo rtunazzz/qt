@@ -169,7 +169,9 @@ function initAddOverride() {
   });
 
   platformSelect.addEventListener("change", () => {
-    addBtn.disabled = !platformSelect.value;
+    const hasValue = !!platformSelect.value;
+    addBtn.disabled = !hasValue;
+    addBtn.classList.toggle("pending", hasValue);
   });
 
   addBtn.addEventListener("click", () => {
@@ -188,9 +190,21 @@ function initAddOverride() {
     platformSelect.innerHTML = '<option value="">Platform...</option>';
     platformSelect.disabled = true;
     addBtn.disabled = true;
+    addBtn.classList.remove("pending");
 
     renderOverrides();
   });
+}
+
+function flushPendingOverride() {
+  const chain = document.getElementById("add-chain").value;
+  const action = document.getElementById("add-action").value;
+  const platform = document.getElementById("add-platform").value;
+  if (!chain || !action || !platform) return;
+
+  if (!currentPrefs.overrides) currentPrefs.overrides = {};
+  if (!currentPrefs.overrides[chain]) currentPrefs.overrides[chain] = {};
+  currentPrefs.overrides[chain][action] = platform;
 }
 
 function renderFooter() {
@@ -224,6 +238,8 @@ function renderFooter() {
 }
 
 function saveSettings(form) {
+  flushPendingOverride();
+
   const prefs = {
     sol: {},
     evm: {},

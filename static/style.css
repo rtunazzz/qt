@@ -364,6 +364,11 @@ code {
   background: var(--accent-dim);
 }
 
+.add-btn.pending {
+  border-color: var(--accent);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
 .add-btn:disabled {
   color: var(--text-dim);
   cursor: default;
@@ -490,4 +495,9 @@ select:disabled {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(184, 255, 87, 0.3); }
+  50% { box-shadow: 0 0 0 4px rgba(184, 255, 87, 0); }
 }
