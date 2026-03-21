@@ -104,6 +104,10 @@ body {
   border-color: var(--border-hover);
 }
 
+.card-accent {
+  border-top: 1px solid rgba(184, 255, 87, 0.15);
+}
+
 .card-header {
   display: flex;
   align-items: center;
@@ -406,6 +410,7 @@ code {
 .add-btn:hover:not(:disabled) {
   border-color: var(--accent);
   background: var(--accent-dim);
+  box-shadow: 0 0 8px rgba(184, 255, 87, 0.2);
 }
 
 .add-btn.pending {
