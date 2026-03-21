@@ -1,20 +1,18 @@
+let currentPrefs;
+
 function initSettings() {
-  const prefs = readPrefs();
+  currentPrefs = readPrefs();
   const form = document.getElementById("settings-form");
 
-  renderDefaultAction(form, prefs);
-  renderEcosystemDefaults(form, prefs);
-  renderChainOverrides(form, prefs);
+  renderEcosystemDefaults(form, currentPrefs);
+  renderOverrides();
+  initAddOverride();
+  renderFooter();
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     saveSettings(form);
   });
-}
-
-function renderDefaultAction(form, prefs) {
-  const select = form.querySelector("#default-action");
-  select.value = prefs.action || "trade";
 }
 
 function renderEcosystemDefaults(form, prefs) {
@@ -44,63 +42,192 @@ function renderEcosystemDefaults(form, prefs) {
   }
 }
 
-function renderChainOverrides(form, prefs) {
-  const container = document.getElementById("overrides");
-  container.innerHTML = "";
+function renderOverrides() {
+  const list = document.getElementById("overrides-list");
+  list.innerHTML = "";
 
-  for (const [chainId, chain] of Object.entries(CHAINS)) {
-    const section = document.createElement("details");
-    section.className = "chain-override";
+  const overrides = currentPrefs.overrides || {};
+  let hasAny = false;
 
-    const summary = document.createElement("summary");
-    const overrideCount = Object.keys(prefs.overrides?.[chainId] || {}).length;
-    summary.textContent = `${chain.name}${overrideCount ? ` (${overrideCount} override${overrideCount > 1 ? "s" : ""})` : ""}`;
-    section.appendChild(summary);
+  for (const [chainId, actions] of Object.entries(overrides)) {
+    const chain = CHAINS[chainId];
+    if (!chain) continue;
 
-    for (const action of ACTIONS) {
-      const platforms = getPlatformsForChain(chainId, action);
-      if (!platforms.length) continue;
+    for (const [action, platformId] of Object.entries(actions)) {
+      const platform = PLATFORM_MAP[platformId];
+      if (!platform) continue;
+      hasAny = true;
 
       const row = document.createElement("div");
-      row.className = "override-row";
+      row.className = "override-item";
 
-      const label = document.createElement("label");
-      label.textContent = action.charAt(0).toUpperCase() + action.slice(1);
-      label.setAttribute("for", `override-${chainId}-${action}`);
+      const info = document.createElement("div");
+      info.className = "override-info";
 
-      const select = document.createElement("select");
-      select.id = `override-${chainId}-${action}`;
-      select.name = `override-${chainId}-${action}`;
+      const chainBadge = document.createElement("span");
+      chainBadge.className = `override-chain ${chain.ecosystem}`;
+      chainBadge.textContent = chain.name;
 
-      const defaultOpt = document.createElement("option");
-      defaultOpt.value = "";
-      defaultOpt.textContent = "— Use default —";
-      select.appendChild(defaultOpt);
+      const actionLabel = document.createElement("span");
+      actionLabel.className = "override-action";
+      actionLabel.textContent = action;
 
-      for (const p of platforms) {
-        const opt = document.createElement("option");
-        opt.value = p.id;
-        opt.textContent = p.name;
-        select.appendChild(opt);
-      }
+      const arrow = document.createElement("span");
+      arrow.className = "override-arrow";
+      arrow.textContent = "\u2192";
 
-      select.value = prefs.overrides?.[chainId]?.[action] || "";
+      const platformLabel = document.createElement("span");
+      platformLabel.className = "override-platform";
+      platformLabel.textContent = platform.name;
 
-      row.appendChild(label);
-      row.appendChild(select);
-      section.appendChild(row);
+      info.appendChild(chainBadge);
+      info.appendChild(actionLabel);
+      info.appendChild(arrow);
+      info.appendChild(platformLabel);
+
+      const removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className = "remove-btn";
+      removeBtn.textContent = "\u00d7";
+      removeBtn.addEventListener("click", () => {
+        delete currentPrefs.overrides[chainId][action];
+        if (!Object.keys(currentPrefs.overrides[chainId]).length) {
+          delete currentPrefs.overrides[chainId];
+        }
+        renderOverrides();
+      });
+
+      row.appendChild(info);
+      row.appendChild(removeBtn);
+      list.appendChild(row);
+    }
+  }
+
+  if (!hasAny) {
+    const empty = document.createElement("div");
+    empty.className = "override-empty";
+    empty.textContent = "No overrides configured";
+    list.appendChild(empty);
+  }
+}
+
+function initAddOverride() {
+  const chainSelect = document.getElementById("add-chain");
+  const actionSelect = document.getElementById("add-action");
+  const platformSelect = document.getElementById("add-platform");
+  const addBtn = document.getElementById("add-btn");
+
+  chainSelect.innerHTML = '<option value="">Chain...</option>';
+  for (const [id, chain] of Object.entries(CHAINS)) {
+    const opt = document.createElement("option");
+    opt.value = id;
+    opt.textContent = chain.name;
+    chainSelect.appendChild(opt);
+  }
+
+  chainSelect.addEventListener("change", () => {
+    const chain = chainSelect.value;
+    actionSelect.innerHTML = '<option value="">Action...</option>';
+    platformSelect.innerHTML = '<option value="">Platform...</option>';
+    platformSelect.disabled = true;
+    addBtn.disabled = true;
+
+    if (!chain) {
+      actionSelect.disabled = true;
+      return;
     }
 
-    container.appendChild(section);
+    actionSelect.disabled = false;
+    for (const action of ACTIONS) {
+      if (getPlatformsForChain(chain, action).length) {
+        const opt = document.createElement("option");
+        opt.value = action;
+        opt.textContent = action.charAt(0).toUpperCase() + action.slice(1);
+        actionSelect.appendChild(opt);
+      }
+    }
+  });
+
+  actionSelect.addEventListener("change", () => {
+    const chain = chainSelect.value;
+    const action = actionSelect.value;
+    platformSelect.innerHTML = '<option value="">Platform...</option>';
+    addBtn.disabled = true;
+
+    if (!action) {
+      platformSelect.disabled = true;
+      return;
+    }
+
+    platformSelect.disabled = false;
+    for (const p of getPlatformsForChain(chain, action)) {
+      const opt = document.createElement("option");
+      opt.value = p.id;
+      opt.textContent = p.name;
+      platformSelect.appendChild(opt);
+    }
+  });
+
+  platformSelect.addEventListener("change", () => {
+    addBtn.disabled = !platformSelect.value;
+  });
+
+  addBtn.addEventListener("click", () => {
+    const chain = chainSelect.value;
+    const action = actionSelect.value;
+    const platform = platformSelect.value;
+    if (!chain || !action || !platform) return;
+
+    if (!currentPrefs.overrides) currentPrefs.overrides = {};
+    if (!currentPrefs.overrides[chain]) currentPrefs.overrides[chain] = {};
+    currentPrefs.overrides[chain][action] = platform;
+
+    chainSelect.value = "";
+    actionSelect.innerHTML = '<option value="">Action...</option>';
+    actionSelect.disabled = true;
+    platformSelect.innerHTML = '<option value="">Platform...</option>';
+    platformSelect.disabled = true;
+    addBtn.disabled = true;
+
+    renderOverrides();
+  });
+}
+
+function renderFooter() {
+  const host = window.location.hostname === "localhost"
+    ? "qt.dev"
+    : window.location.host;
+
+  const container = document.getElementById("footer-routes");
+
+  const routes = [
+    { path: "/{chain}/{token}", desc: "redirect using default action (trade)" },
+    { path: "/{chain}/{token}/trade", desc: "open in trading platform" },
+    { path: "/{chain}/{token}/chart", desc: "open in charting tool" },
+    { path: "/{chain}/{token}/explore", desc: "open in block explorer" },
+  ];
+
+  const chains = Object.entries(CHAINS).map(([id, c]) => `${id} (${c.name})`).join(", ");
+
+  let html = '<div class="footer-title">Usage</div>';
+  html += '<div class="footer-table">';
+  for (const r of routes) {
+    html += `<div class="footer-route">`;
+    html += `<code>${host}${r.path}</code>`;
+    html += `<span>${r.desc}</span>`;
+    html += `</div>`;
   }
+  html += '</div>';
+  html += `<div class="footer-chains">Supported chains: <code>${chains}</code></div>`;
+
+  container.innerHTML = html;
 }
 
 function saveSettings(form) {
   const prefs = {
-    action: form.querySelector("#default-action").value,
     sol: {},
     evm: {},
-    overrides: {},
+    overrides: currentPrefs.overrides || {},
   };
 
   for (const eco of ["sol", "evm"]) {
@@ -110,25 +237,18 @@ function saveSettings(form) {
     }
   }
 
-  for (const [chainId] of Object.entries(CHAINS)) {
-    const chainOverrides = {};
-    for (const action of ACTIONS) {
-      const select = form.querySelector(`#override-${chainId}-${action}`);
-      if (select?.value) chainOverrides[action] = select.value;
-    }
-    if (Object.keys(chainOverrides).length) {
-      prefs.overrides[chainId] = chainOverrides;
-    }
-  }
-
   writePrefs(prefs);
+  currentPrefs = prefs;
 
-  const btn = form.querySelector("button[type=submit]");
-  const original = btn.textContent;
-  btn.textContent = "Saved!";
+  const btn = form.querySelector(".save-btn");
+  const textEl = btn.querySelector(".save-text");
+  const iconEl = btn.querySelector(".save-icon");
+  textEl.textContent = "Saved";
+  iconEl.textContent = "\u2713";
   btn.disabled = true;
   setTimeout(() => {
-    btn.textContent = original;
+    textEl.textContent = "Save preferences";
+    iconEl.innerHTML = "&rarr;";
     btn.disabled = false;
   }, 1200);
 }

@@ -117,7 +117,7 @@ const PLATFORMS = [
     buildUrl: (chain, token) => `https://t.me/BloomEVMbot?start=ref_tuna_ca_${token}`,
   },
 
-  // --- SOL Explorers ---
+  // --- Explorers ---
   {
     id: "solscan",
     name: "Solscan",
@@ -126,34 +126,21 @@ const PLATFORMS = [
     buildUrl: (chain, token) => `https://solscan.io/token/${token}`,
   },
   {
-    id: "solana-explorer",
-    name: "Solana Explorer",
-    category: "explore",
-    chains: ["sol"],
-    buildUrl: (chain, token) => `https://explorer.solana.com/address/${token}`,
-  },
-
-  // --- EVM Explorers ---
-  {
     id: "etherscan",
     name: "Etherscan",
     category: "explore",
-    chains: ["eth"],
-    buildUrl: (chain, token) => `https://etherscan.io/token/${token}`,
+    chains: ["eth", "base", "bsc"],
+    buildUrl: (chain, token) => {
+      const domains = { eth: "etherscan.io", base: "basescan.org", bsc: "bscscan.com" };
+      return `https://${domains[chain] || "etherscan.io"}/token/${token}`;
+    },
   },
   {
-    id: "basescan",
-    name: "Basescan",
+    id: "blockscout",
+    name: "Blockscout",
     category: "explore",
-    chains: ["base"],
-    buildUrl: (chain, token) => `https://basescan.org/token/${token}`,
-  },
-  {
-    id: "bscscan",
-    name: "BscScan",
-    category: "explore",
-    chains: ["bsc"],
-    buildUrl: (chain, token) => `https://bscscan.com/token/${token}`,
+    chains: ["eth", "base", "bsc"],
+    buildUrl: (chain, token) => `https://explorer.blockscout.com/address/${token}`,
   },
 
   // --- Charting (cross-chain) ---
@@ -201,7 +188,6 @@ const COOKIE_NAME = "qt";
 const ACTIONS = ["trade", "chart", "explore"];
 
 const DEFAULT_PREFS = {
-  action: "trade",
   sol: { trade: "axiom", chart: "dexscreener", explore: "solscan" },
   evm: { trade: "sigma-vip", chart: "dexscreener", explore: "etherscan" },
   overrides: {},

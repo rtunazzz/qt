@@ -34,7 +34,7 @@ function redirect() {
   }
 
   const prefs = readPrefs();
-  const action = route.action || prefs.action || "trade";
+  const action = route.action || "trade";
   const platformId = resolve(prefs, route.chain, action);
 
   if (!platformId) {

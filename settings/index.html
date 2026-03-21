@@ -3,68 +3,119 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>qt — Settings</title>
+  <title>qt — settings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+  <div class="noise"></div>
   <div class="container">
-    <h1>qt <span class="subtitle">settings</span></h1>
-    <p class="description">Configure your default trading, charting, and explorer platforms. Preferences are saved locally in your browser.</p>
+    <header class="header" style="--i:0">
+      <div class="logo">
+        <span class="logo-mark">qt</span>
+        <span class="logo-divider">/</span>
+        <span class="logo-sub">settings</span>
+      </div>
+      <p class="tagline">Configure redirect preferences.<br>All data stored locally via cookies.</p>
+    </header>
 
     <form id="settings-form">
-      <section>
-        <h2>Default Action</h2>
-        <p class="hint">When visiting /{chain}/{token} without specifying an action</p>
-        <div class="field">
-          <label for="default-action">Action</label>
-          <select id="default-action" name="default-action">
-            <option value="trade">Trade</option>
-            <option value="chart">Chart</option>
-            <option value="explore">Explore</option>
-          </select>
+      <div class="eco-grid">
+        <section class="card" style="--i:1">
+          <div class="card-header">
+            <h2>Solana</h2>
+            <span class="badge sol">SOL</span>
+          </div>
+          <div class="field">
+            <label for="sol-trade">Trading</label>
+            <div class="select-wrap">
+              <select id="sol-trade" name="sol-trade"></select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="sol-chart">Charting</label>
+            <div class="select-wrap">
+              <select id="sol-chart" name="sol-chart"></select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="sol-explore">Explorer</label>
+            <div class="select-wrap">
+              <select id="sol-explore" name="sol-explore"></select>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" style="--i:2">
+          <div class="card-header">
+            <h2>EVM</h2>
+            <span class="badge evm">ETH</span>
+          </div>
+          <div class="field">
+            <label for="evm-trade">Trading</label>
+            <div class="select-wrap">
+              <select id="evm-trade" name="evm-trade"></select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="evm-chart">Charting</label>
+            <div class="select-wrap">
+              <select id="evm-chart" name="evm-chart"></select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="evm-explore">Explorer</label>
+            <div class="select-wrap">
+              <select id="evm-explore" name="evm-explore"></select>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="card" style="--i:3">
+        <div class="card-header">
+          <h2>Chain Overrides</h2>
+          <span class="badge">per-chain</span>
+        </div>
+        <p class="hint">Override ecosystem defaults for a specific chain</p>
+
+        <div id="overrides-list"></div>
+
+        <div class="add-override" id="add-override">
+          <div class="add-override-row">
+            <div class="select-wrap">
+              <select id="add-chain">
+                <option value="">Chain...</option>
+              </select>
+            </div>
+            <div class="select-wrap">
+              <select id="add-action" disabled>
+                <option value="">Action...</option>
+              </select>
+            </div>
+            <div class="select-wrap">
+              <select id="add-platform" disabled>
+                <option value="">Platform...</option>
+              </select>
+            </div>
+            <button type="button" class="add-btn" id="add-btn" disabled>+</button>
+          </div>
         </div>
       </section>
 
-      <section>
-        <h2>Solana Defaults</h2>
-        <div class="field">
-          <label for="sol-trade">Trading</label>
-          <select id="sol-trade" name="sol-trade"></select>
-        </div>
-        <div class="field">
-          <label for="sol-chart">Charting</label>
-          <select id="sol-chart" name="sol-chart"></select>
-        </div>
-        <div class="field">
-          <label for="sol-explore">Explorer</label>
-          <select id="sol-explore" name="sol-explore"></select>
-        </div>
-      </section>
-
-      <section>
-        <h2>EVM Defaults</h2>
-        <div class="field">
-          <label for="evm-trade">Trading</label>
-          <select id="evm-trade" name="evm-trade"></select>
-        </div>
-        <div class="field">
-          <label for="evm-chart">Charting</label>
-          <select id="evm-chart" name="evm-chart"></select>
-        </div>
-        <div class="field">
-          <label for="evm-explore">Explorer</label>
-          <select id="evm-explore" name="evm-explore"></select>
-        </div>
-      </section>
-
-      <section>
-        <h2>Chain Overrides</h2>
-        <p class="hint">Override ecosystem defaults for specific chains</p>
-        <div id="overrides"></div>
-      </section>
-
-      <button type="submit">Save</button>
+      <div class="actions" style="--i:4">
+        <button type="submit" class="save-btn">
+          <span class="save-text">Save preferences</span>
+          <span class="save-icon">&rarr;</span>
+        </button>
+      </div>
     </form>
+
+    <footer class="footer" style="--i:5">
+      <div class="footer-routes" id="footer-routes"></div>
+    </footer>
   </div>
 
   <script src="/static/config.js"></script>
