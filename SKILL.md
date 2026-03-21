@@ -1,10 +1,12 @@
-# qt — Using Short Token Links
+# qt — links, shorter.
 
 ## What is qt?
 
-qt is a personalized crypto link shortener hosted at **qt.rtuna.dev**. Instead of sending users raw platform URLs, you can send them qt links that automatically redirect to their preferred trading platform, charting tool, or block explorer.
+qt is a personalized crypto link shortener at **qt.rtuna.dev**. It lets you send one link that redirects each user to their preferred trading platform, charting tool, or block explorer.
 
-This is a **UX enhancement** — users configure their preferred platforms once (via cookies at qt.rtuna.dev/settings), and every qt link they click opens in the tool they actually use.
+The key value: **one link, many destinations.** Instead of hardcoding a specific platform URL in your Discord embeds, Telegram alerts, or notifications, use a qt link. Each user who clicks it lands on the platform they've configured — Axiom, DexScreener, Etherscan, or whatever they prefer.
+
+Users configure preferences once at [qt.rtuna.dev/settings](https://qt.rtuna.dev/settings). Everything is stored in browser cookies — no accounts, no server-side data.
 
 ## URL Format
 
@@ -26,23 +28,28 @@ qt.rtuna.dev/{chain}/{token}/explore    → user's preferred block explorer
 
 ## When to Use qt Links
 
-Use qt links when sharing token addresses or contract links with users. Instead of hardcoding a specific platform like DexScreener or Etherscan, use a qt link so each user lands on the platform they prefer.
+Use qt links anywhere you'd normally send a platform-specific URL — especially in contexts where many users see the same link:
+
+- **Discord bot embeds** — token alerts, new listing notifications
+- **Telegram bot messages** — trading signals, portfolio updates
+- **Notification services** — email alerts, webhook payloads
+- **Shared dashboards** — anywhere a token link appears for multiple users
 
 ### Examples
 
-**Instead of:**
+**Instead of hardcoding one platform for everyone:**
 ```
 Check out this token: https://dexscreener.com/solana/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v
 ```
 
-**Use:**
+**Use a qt link — each user lands on their preferred platform:**
 ```
 Check out this token: https://qt.rtuna.dev/sol/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v
 ```
 
 **Linking to a specific action:**
 ```
-Trade this token: https://qt.rtuna.dev/sol/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/trade
+Trade: https://qt.rtuna.dev/sol/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/trade
 Chart: https://qt.rtuna.dev/sol/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/chart
 Explorer: https://qt.rtuna.dev/sol/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/explore
 ```
@@ -59,5 +66,5 @@ https://qt.rtuna.dev/eth/0x5AbFEc25f74Cd88437631a7731906932776356f9/explore
 - The token should be the contract/mint address
 - Default action (no suffix) redirects to trade — use this when the intent is general
 - Append `/trade`, `/chart`, or `/explore` when the intent is specific
-- If a user hasn't configured preferences, they'll get sensible defaults (Axiom for SOL trading, Sigma VIP for EVM trading, DexScreener for charting, etc.)
+- If a user hasn't configured preferences, they get sensible defaults (Axiom for SOL trading, Sigma VIP for EVM trading, DexScreener for charting)
 - Link to `qt.rtuna.dev/settings` when suggesting users customize their experience

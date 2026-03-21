@@ -14,7 +14,7 @@
 
   <text x="450" y="135" text-anchor="middle" font-family="'IBM Plex Mono', 'SF Mono', monospace" font-size="72" font-weight="600" fill="#b8ff57" letter-spacing="-2">qt</text>
 
-  <text x="450" y="185" text-anchor="middle" font-family="'DM Sans', -apple-system, sans-serif" font-size="18" fill="#5a5a5a">personalized crypto link shortcuts</text>
+  <text x="450" y="185" text-anchor="middle" font-family="'DM Sans', -apple-system, sans-serif" font-size="18" fill="#5a5a5a">links, shorter.</text>
 
   <line x1="350" y1="215" x2="550" y2="215" stroke="rgba(184,255,87,0.15)" stroke-width="1"/>
 

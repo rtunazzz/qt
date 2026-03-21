@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/header.svg" alt="qt — personalized crypto link shortcuts" width="900">
+  <img src="assets/header.svg" alt="qt — links, shorter." width="900">
 </p>
 
 <p align="center">
@@ -8,20 +8,27 @@
 
 ---
 
-**qt** turns long crypto URLs into short, personalized redirects with your preferred platforms and referral codes baked in.
+**qt** — one link, every platform. Users choose where it takes them.
 
-Visit `qt.rtuna.dev/{chain}/{token}` and get redirected to your trading platform, charting tool, or block explorer — based on preferences stored in your browser cookies.
+Send a single `qt.rtuna.dev` link in your Discord embeds, Telegram notifications, or anywhere else — each user gets redirected to the trading platform, charting tool, or block explorer they actually prefer. No more hardcoding DexScreener for someone who uses Birdeye, or Jupiter for someone on Axiom.
 
 ## How it works
 
 ```
-qt.rtuna.dev/sol/EPjFWdd5...   →  redirects to your default action (trade)
-qt.rtuna.dev/sol/EPjFWdd5.../trade    →  trading platform
-qt.rtuna.dev/sol/EPjFWdd5.../chart    →  charting tool
-qt.rtuna.dev/sol/EPjFWdd5.../explore  →  block explorer
+qt.rtuna.dev/sol/EPjFWdd5...            →  default action (trade)
+qt.rtuna.dev/sol/EPjFWdd5.../trade      →  trading platform
+qt.rtuna.dev/sol/EPjFWdd5.../chart      →  charting tool
+qt.rtuna.dev/sol/EPjFWdd5.../explore    →  block explorer
 ```
 
-Configure defaults at [qt.rtuna.dev/settings](https://qt.rtuna.dev/settings).
+Users configure their preferred platforms at [qt.rtuna.dev/settings](https://qt.rtuna.dev/settings). Preferences are stored locally in browser cookies — no accounts, no server-side data.
+
+## Why use qt links?
+
+- **One link, many destinations** — embed a single URL in your bot, alert, or message. Each user lands on their preferred platform.
+- **Great for embeds** — Discord bots, Telegram alerts, and notification services can use qt links instead of picking one platform for everyone.
+- **Privacy-focused** — zero server-side storage. All preferences live in the user's browser.
+- **Referral-ready** — platform referral codes are baked into the redirects.
 
 ## Supported chains
 
@@ -35,7 +42,7 @@ Configure defaults at [qt.rtuna.dev/settings](https://qt.rtuna.dev/settings).
 ## Stack
 
 - Vanilla HTML + JavaScript — no frameworks, no build step
-- Privacy-focused — zero server-side data storage, all preferences live in your browser cookies
+- All preferences stored client-side via cookies
 - Hosted on Cloudflare Pages
 - Auto-deploys on push to `main`
 
