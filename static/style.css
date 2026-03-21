@@ -66,6 +66,11 @@ body {
   font-weight: 600;
   color: var(--accent);
   letter-spacing: -0.03em;
+  text-decoration: none;
+}
+
+.logo-mark:hover {
+  opacity: 0.85;
 }
 
 .logo-divider {
