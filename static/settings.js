@@ -104,14 +104,11 @@ function renderOverrides() {
   });
 }
 
-function resetSelect(select, placeholder, disabled = true) {
+function setSelectOptions(select, placeholder, options) {
   select.innerHTML = `<option value="">${placeholder}</option>`;
-  select.disabled = disabled;
-}
-
-function populateSelect(select, items) {
-  resetSelect(select, select.options[0]?.textContent || "...", false);
-  for (const { value, label } of items) {
+  select.disabled = !options;
+  if (!options) return;
+  for (const [value, label] of options) {
     const opt = document.createElement("option");
     opt.value = value;
     opt.textContent = label;
@@ -125,43 +122,34 @@ function initAddOverride() {
   const platformSelect = document.getElementById("add-platform");
   const addBtn = document.getElementById("add-btn");
 
-  function resetForm() {
-    chainSelect.value = "";
-    resetSelect(actionSelect, "Action...");
-    resetSelect(platformSelect, "Platform...");
-    addBtn.disabled = true;
-    addBtn.classList.remove("pending");
-  }
-
-  populateSelect(chainSelect, Object.entries(CHAINS).map(([id, c]) => ({ value: id, label: c.name })));
+  setSelectOptions(chainSelect, "Chain...",
+    Object.entries(CHAINS).map(([id, c]) => [id, c.name]));
 
   chainSelect.addEventListener("change", () => {
-    resetSelect(platformSelect, "Platform...");
+    setSelectOptions(platformSelect, "Platform...");
     addBtn.disabled = true;
 
     if (!chainSelect.value) {
-      resetSelect(actionSelect, "Action...");
+      setSelectOptions(actionSelect, "Action...");
       return;
     }
 
-    populateSelect(actionSelect,
+    setSelectOptions(actionSelect, "Action...",
       ACTIONS.filter((a) => getPlatformsForChain(chainSelect.value, a).length)
-        .map((a) => ({ value: a, label: a.charAt(0).toUpperCase() + a.slice(1) }))
-    );
+        .map((a) => [a, a.charAt(0).toUpperCase() + a.slice(1)]));
   });
 
   actionSelect.addEventListener("change", () => {
     addBtn.disabled = true;
 
     if (!actionSelect.value) {
-      resetSelect(platformSelect, "Platform...");
+      setSelectOptions(platformSelect, "Platform...");
       return;
     }
 
-    populateSelect(platformSelect,
+    setSelectOptions(platformSelect, "Platform...",
       getPlatformsForChain(chainSelect.value, actionSelect.value)
-        .map((p) => ({ value: p.id, label: p.name }))
-    );
+        .map((p) => [p.id, p.name]));
   });
 
   platformSelect.addEventListener("change", () => {
@@ -180,7 +168,12 @@ function initAddOverride() {
     if (!currentPrefs.overrides[chain]) currentPrefs.overrides[chain] = {};
     currentPrefs.overrides[chain][action] = platform;
 
-    resetForm();
+    chainSelect.value = "";
+    setSelectOptions(actionSelect, "Action...");
+    setSelectOptions(platformSelect, "Platform...");
+    addBtn.disabled = true;
+    addBtn.classList.remove("pending");
+
     saveCurrentPrefs();
     renderOverrides();
   });

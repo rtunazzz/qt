@@ -446,13 +446,8 @@ select:disabled {
   white-space: nowrap;
 }
 
-.footer-route code .dim {
-  color: var(--text-dim);
-}
-
-.footer-route code .accent {
-  color: var(--accent);
-}
+.dim { color: var(--text-dim); }
+.accent { color: var(--accent); }
 
 .footer-desc {
   color: var(--text-dim);
