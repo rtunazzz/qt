@@ -12,6 +12,7 @@ const CHAIN_SLUGS = {
   birdeye: { sol: "solana", eth: "ethereum", base: "base", bsc: "bsc" },
   uniswap: { eth: "ethereum", base: "base", bsc: "bnb" },
   "1inch": { eth: "1", base: "8453", bsc: "56" },
+  defined: { sol: "sol", eth: "eth", base: "base", bsc: "bsc" },
 };
 
 const PLATFORMS = [
@@ -171,6 +172,13 @@ const PLATFORMS = [
     category: "chart",
     chains: ["sol", "eth", "base", "bsc"],
     buildUrl: (chain, token) => `https://birdeye.so/token/${token}?chain=${CHAIN_SLUGS.birdeye[chain] || chain}`,
+  },
+  {
+    id: "defined",
+    name: "Defined",
+    category: "chart",
+    chains: ["sol", "eth", "base", "bsc"],
+    buildUrl: (chain, token) => `https://www.defined.fi/${CHAIN_SLUGS.defined[chain] || chain}/${token}`,
   },
 ];
 
