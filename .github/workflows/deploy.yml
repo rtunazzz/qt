@@ -11,5 +11,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          wranglerVersion: "3.90.0"
+          wranglerVersion: "4.76.0"
           command: pages deploy . --project-name=qt --branch=main --commit-dirty=true
