@@ -8,11 +8,25 @@ function initSettings() {
   renderOverrides();
   initAddOverride();
   renderFooter();
+}
 
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    saveSettings(form);
-  });
+function saveCurrentPrefs() {
+  const form = document.getElementById("settings-form");
+  const prefs = {
+    sol: {},
+    evm: {},
+    overrides: currentPrefs.overrides || {},
+  };
+
+  for (const eco of ["sol", "evm"]) {
+    for (const action of ACTIONS) {
+      const select = form.querySelector(`#${eco}-${action}`);
+      if (select?.value) prefs[eco][action] = select.value;
+    }
+  }
+
+  writePrefs(prefs);
+  currentPrefs = prefs;
 }
 
 function renderEcosystemDefaults(form, prefs) {
@@ -38,6 +52,7 @@ function renderEcosystemDefaults(form, prefs) {
       }
 
       select.value = prefs[eco]?.[action] || select.options[0]?.value || "";
+      select.addEventListener("change", saveCurrentPrefs);
     }
   }
 }
@@ -94,6 +109,7 @@ function renderOverrides() {
         if (!Object.keys(currentPrefs.overrides[chainId]).length) {
           delete currentPrefs.overrides[chainId];
         }
+        saveCurrentPrefs();
         renderOverrides();
       });
 
@@ -192,19 +208,9 @@ function initAddOverride() {
     addBtn.disabled = true;
     addBtn.classList.remove("pending");
 
+    saveCurrentPrefs();
     renderOverrides();
   });
-}
-
-function flushPendingOverride() {
-  const chain = document.getElementById("add-chain").value;
-  const action = document.getElementById("add-action").value;
-  const platform = document.getElementById("add-platform").value;
-  if (!chain || !action || !platform) return;
-
-  if (!currentPrefs.overrides) currentPrefs.overrides = {};
-  if (!currentPrefs.overrides[chain]) currentPrefs.overrides[chain] = {};
-  currentPrefs.overrides[chain][action] = platform;
 }
 
 function renderFooter() {
@@ -241,38 +247,6 @@ function renderFooter() {
   html += '</div>';
 
   container.innerHTML = html;
-}
-
-function saveSettings(form) {
-  flushPendingOverride();
-
-  const prefs = {
-    sol: {},
-    evm: {},
-    overrides: currentPrefs.overrides || {},
-  };
-
-  for (const eco of ["sol", "evm"]) {
-    for (const action of ACTIONS) {
-      const select = form.querySelector(`#${eco}-${action}`);
-      if (select?.value) prefs[eco][action] = select.value;
-    }
-  }
-
-  writePrefs(prefs);
-  currentPrefs = prefs;
-
-  const btn = form.querySelector(".save-btn");
-  const textEl = btn.querySelector(".save-text");
-  const iconEl = btn.querySelector(".save-icon");
-  textEl.textContent = "Saved";
-  iconEl.textContent = "\u2713";
-  btn.disabled = true;
-  setTimeout(() => {
-    textEl.textContent = "Save preferences";
-    iconEl.innerHTML = "&rarr;";
-    btn.disabled = false;
-  }, 1200);
 }
 
 document.addEventListener("DOMContentLoaded", initSettings);
