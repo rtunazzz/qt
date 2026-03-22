@@ -15,10 +15,10 @@ Send a single `qt.rtuna.dev` link in your Discord embeds, Telegram notifications
 ## How it works
 
 ```
-qt.rtuna.dev/sol/EPjFWdd5...            →  default action (trade)
-qt.rtuna.dev/sol/EPjFWdd5.../trade      →  trading platform
-qt.rtuna.dev/sol/EPjFWdd5.../chart      →  charting tool
-qt.rtuna.dev/sol/EPjFWdd5.../explore    →  block explorer
+qt.rtuna.dev/{chain}/{token}            →  default action (trade)
+qt.rtuna.dev/{chain}/{token}/trade      →  trading platform
+qt.rtuna.dev/{chain}/{token}/chart      →  charting tool
+qt.rtuna.dev/{chain}/{token}/explore    →  block explorer
 ```
 
 Users configure their preferred platforms at [qt.rtuna.dev/settings](https://qt.rtuna.dev/settings). Preferences are stored locally in browser cookies — no accounts, no server-side data.

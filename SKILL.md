@@ -39,25 +39,25 @@ Use qt links anywhere you'd normally send a platform-specific URL — especially
 
 **Instead of hardcoding one platform for everyone:**
 ```
-Check out this token: https://dexscreener.com/solana/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v
+Check out this token: https://dexscreener.com/solana/{token}
 ```
 
 **Use a qt link — each user lands on their preferred platform:**
 ```
-Check out this token: https://qt.rtuna.dev/sol/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v
+Check out this token: https://qt.rtuna.dev/sol/{token}
 ```
 
 **Linking to a specific action:**
 ```
-Trade: https://qt.rtuna.dev/sol/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/trade
-Chart: https://qt.rtuna.dev/sol/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/chart
-Explorer: https://qt.rtuna.dev/sol/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/explore
+Trade: https://qt.rtuna.dev/sol/{token}/trade
+Chart: https://qt.rtuna.dev/sol/{token}/chart
+Explorer: https://qt.rtuna.dev/sol/{token}/explore
 ```
 
 **EVM tokens:**
 ```
-https://qt.rtuna.dev/base/0x3e7712cf29164432EFc6Ef0aa669C10b674EfE43/trade
-https://qt.rtuna.dev/eth/0x5AbFEc25f74Cd88437631a7731906932776356f9/explore
+https://qt.rtuna.dev/base/{token}/trade
+https://qt.rtuna.dev/eth/{token}/explore
 ```
 
 ## Guidelines
