@@ -12,6 +12,8 @@ const CHAIN_SLUGS = {
   birdeye: { sol: "solana", eth: "ethereum", base: "base", bsc: "bsc" },
   uniswap: { eth: "ethereum", base: "base", bsc: "bnb" },
   "1inch": { eth: "1", base: "8453", bsc: "56" },
+  fomo: { sol: "1399811149", eth: "1", base: "8453", bsc: "56" },
+  azura: { sol: "1399811149", eth: "1", base: "8453", bsc: "56" },
 };
 
 const PLATFORMS = [
@@ -113,6 +115,20 @@ const PLATFORMS = [
     category: "trade",
     chains: ["eth", "base", "bsc"],
     buildUrl: (chain, token) => `https://t.me/BloomEVMbot?start=ref_tuna_ca_${token}`,
+  },
+  {
+    id: "fomo",
+    name: "FOMO",
+    category: "trade",
+    chains: ["sol", "eth", "base", "bsc"],
+    buildUrl: (chain, token) => `https://fomo.family/coin?address=${token}&chainId=${CHAIN_SLUGS.fomo[chain]}`,
+  },
+  {
+    id: "azura",
+    name: "Azura",
+    category: "trade",
+    chains: ["sol", "eth", "base", "bsc"],
+    buildUrl: (chain, token) => `https://app.azura.xyz/spot/${CHAIN_SLUGS.azura[chain]}/${token}`,
   },
 
   {
