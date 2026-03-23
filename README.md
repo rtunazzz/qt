@@ -30,15 +30,6 @@ Users configure their preferred platforms at [qt.rtuna.dev/settings](https://qt.
 - **Privacy-focused** — zero server-side storage. All preferences live in the user's browser.
 - **Referral-ready** — platform referral codes are baked into the redirects.
 
-## Supported chains
-
-| Chain | ID |
-|---|---|
-| Solana | `sol` |
-| Ethereum | `eth` |
-| Base | `base` |
-| BSC | `bsc` |
-
 ## Stack
 
 - Vanilla HTML + JavaScript — no frameworks, no build step
