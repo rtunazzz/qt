@@ -269,19 +269,44 @@
 .hero-footer {
   margin-top: auto;
   padding-top: 3rem;
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
   animation: fadeUp 0.5s ease both;
   animation-delay: calc(var(--i) * 0.07s);
 }
 
 .hero-chains {
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+.hero-chains-track {
   display: flex;
   gap: 0.5rem;
-  justify-content: center;
+  width: max-content;
+  animation: marquee 35s linear infinite;
+}
+
+.hero-chains:hover .hero-chains-track {
+  animation-play-state: paused;
 }
 
 .hero-chains code {
   font-size: 0.68rem;
   padding: 0.15rem 0.5rem;
+  flex-shrink: 0;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-chains-track {
+    animation: none;
+  }
 }
 
 @media (max-width: 600px) {
