@@ -10,14 +10,15 @@ Static site (vanilla HTML/CSS/JS) deployed to Cloudflare Pages. No build step, n
 ## Adding a platform
 
 1. Add entry to `PLATFORMS` in `static/config.js`
-2. If platform uses non-standard chain IDs in URLs, add mapping to `CHAIN_SLUGS`
-3. Add `<span class="platform-tag {category}">` to the hero platforms grid in `index.html`
+2. Choose resolver: `R.chainId()` (numeric chain IDs), `R.slug()` (canonical names), or custom `buildUrl` (platforms that use the chain key directly need no resolver)
+3. If using `R.slug()` and a platform uses non-standard names for some chains, pass overrides: `R.slug({ eth: "ether" })`
+4. Add `<span class="platform-tag {category}">` to the hero platforms grid in `index.html`
 
 ## Adding a chain
 
-1. Add to `CHAINS` in `static/config.js`
-2. Add slug mappings in `CHAIN_SLUGS` for platforms that need them
-3. Add to relevant platforms' `chains` arrays
+1. Add entry to `CHAINS` in `static/config.js` with `name`, `ecosystem`, `chainId`, and `slug`
+2. Add chain key to relevant platforms' `chains` arrays (most slug/chainId-based platforms work automatically)
+3. If a platform uses a non-standard slug for this chain, add override to its `R.slug({...})` call
 4. Add `<code>` tag to hero footer in `index.html`
 
 ## Conventions

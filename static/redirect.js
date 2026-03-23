@@ -38,7 +38,8 @@ function redirect() {
   const platform = PLATFORM_MAP[platformId];
   if (!platform) return;
 
-  window.location.replace(platform.buildUrl(route.chain, route.token));
+  const slug = platform.resolveChain ? platform.resolveChain(route.chain) : route.chain;
+  window.location.replace(platform.buildUrl(route.chain, route.token, slug));
 }
 
 redirect();

@@ -1,20 +1,53 @@
 const CHAINS = {
-  sol: { name: "Solana", ecosystem: "sol" },
-  eth: { name: "Ethereum", ecosystem: "evm" },
-  base: { name: "Base", ecosystem: "evm" },
-  bsc: { name: "BSC", ecosystem: "evm" },
+  sol:        { name: "Solana",     ecosystem: "sol",  chainId: 1399811149, slug: "solana" },
+  eth:        { name: "Ethereum",   ecosystem: "evm",  chainId: 1,          slug: "ethereum" },
+  base:       { name: "Base",       ecosystem: "evm",  chainId: 8453,       slug: "base" },
+  bsc:        { name: "BSC",        ecosystem: "evm",  chainId: 56,         slug: "bsc" },
+  arb:        { name: "Arbitrum",   ecosystem: "evm",  chainId: 42161,      slug: "arbitrum" },
+  op:         { name: "Optimism",   ecosystem: "evm",  chainId: 10,         slug: "optimism" },
+  matic:      { name: "Polygon",    ecosystem: "evm",  chainId: 137,        slug: "polygon" },
+  avax:       { name: "Avalanche",  ecosystem: "evm",  chainId: 43114,      slug: "avalanche" },
+  ftm:        { name: "Fantom",     ecosystem: "evm",  chainId: 250,        slug: "fantom" },
+  sonic:      { name: "Sonic",      ecosystem: "evm",  chainId: 146,        slug: "sonic" },
+  blast:      { name: "Blast",      ecosystem: "evm",  chainId: 81457,      slug: "blast" },
+  mantle:     { name: "Mantle",     ecosystem: "evm",  chainId: 5000,       slug: "mantle" },
+  sui:        { name: "Sui",        ecosystem: "sui",  chainId: null,       slug: "sui" },
+  tron:       { name: "Tron",       ecosystem: "tron", chainId: null,       slug: "tron" },
+  ton:        { name: "TON",        ecosystem: "ton",  chainId: null,       slug: "ton" },
+  btc:        { name: "Bitcoin",    ecosystem: "btc",  chainId: null,       slug: "bitcoin" },
+  shape:      { name: "Shape",      ecosystem: "evm",  chainId: 360,        slug: "shape" },
+  worldchain: { name: "Worldchain", ecosystem: "evm",  chainId: 480,        slug: "worldchain" },
+  apechain:   { name: "ApeChain",   ecosystem: "evm",  chainId: 33139,      slug: "apechain" },
+  morph:      { name: "Morph",      ecosystem: "evm",  chainId: 2818,       slug: "morph" },
+  unichain:   { name: "Unichain",   ecosystem: "evm",  chainId: 130,        slug: "unichain" },
+  monad:      { name: "Monad",      ecosystem: "evm",  chainId: 143,        slug: "monad" },
+  abstract:   { name: "Abstract",   ecosystem: "evm",  chainId: 2741,       slug: "abstract" },
+  ink:        { name: "Ink",        ecosystem: "evm",  chainId: 57073,      slug: "ink" },
+  soneium:    { name: "Soneium",    ecosystem: "evm",  chainId: 1868,       slug: "soneium" },
+  berachain:  { name: "Berachain",  ecosystem: "evm",  chainId: 80094,      slug: "berachain" },
+  hyperevm:   { name: "HyperEVM",   ecosystem: "evm",  chainId: 999,        slug: "hyperevm" },
+  story:      { name: "Story",      ecosystem: "evm",  chainId: 1514,       slug: "story" },
+  xlayer:     { name: "X Layer",    ecosystem: "evm",  chainId: 196,        slug: "xlayer" },
+  plasma:     { name: "Plasma",     ecosystem: "evm",  chainId: 9745,       slug: "plasma" },
+  flow:       { name: "Flow",       ecosystem: "evm",  chainId: 747,        slug: "flow" },
+  megaeth:    { name: "MegaETH",    ecosystem: "evm",  chainId: 4326,       slug: "megaeth" },
+  tempo:      { name: "Tempo",      ecosystem: "evm",  chainId: 4217,       slug: "tempo" },
 };
 
-const CHAIN_SLUGS = {
-  dexscreener: { sol: "solana", eth: "ethereum", base: "base", bsc: "bsc" },
-  geckoterminal: { sol: "solana", eth: "eth", base: "base", bsc: "bsc" },
-  dextools: { sol: "solana", eth: "ether", base: "base", bsc: "bnb" },
-  birdeye: { sol: "solana", eth: "ethereum", base: "base", bsc: "bsc" },
-  uniswap: { eth: "ethereum", base: "base", bsc: "bnb" },
-  "1inch": { eth: "1", base: "8453", bsc: "56" },
-  fomo: { sol: "1399811149", eth: "1", base: "8453", bsc: "56" },
-  azura: { sol: "1399811149", eth: "1", base: "8453", bsc: "56" },
+const R = {
+  chainId: () => (chain) => {
+    const id = CHAINS[chain].chainId;
+    if (id === null) throw new Error(`No chainId for chain "${chain}"`);
+    return String(id);
+  },
+  slug: (overrides) => (chain) => overrides?.[chain] ?? CHAINS[chain].slug ?? chain,
 };
+
+function chainsForEcosystem(eco) {
+  return Object.entries(CHAINS).filter(([_, c]) => c.ecosystem === eco).map(([id]) => id);
+}
+
+const ALL_EVM = chainsForEcosystem("evm");
 
 const PLATFORMS = [
   {
@@ -30,13 +63,6 @@ const PLATFORMS = [
     category: "trade",
     chains: ["sol"],
     buildUrl: (chain, token) => `https://photon-sol.tinyastro.io/en/r/@rtunazzz/${token}`,
-  },
-  {
-    id: "gmgn",
-    name: "GMGN",
-    category: "trade",
-    chains: ["sol"],
-    buildUrl: (chain, token) => `https://gmgn.ai/sol/token/rtuna_${token}`,
   },
   {
     id: "axiom",
@@ -57,15 +83,17 @@ const PLATFORMS = [
     id: "uniswap",
     name: "Uniswap",
     category: "trade",
-    chains: ["eth", "base", "bsc"],
-    buildUrl: (chain, token) => `https://app.uniswap.org/swap?outputCurrency=${token}&chain=${CHAIN_SLUGS.uniswap[chain] || chain}`,
+    chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "blast", "unichain"],
+    resolveChain: R.slug({ bsc: "bnb" }),
+    buildUrl: (chain, token, slug) => `https://app.uniswap.org/swap?outputCurrency=${token}&chain=${slug}`,
   },
   {
     id: "1inch",
     name: "1inch",
     category: "trade",
-    chains: ["eth", "base", "bsc"],
-    buildUrl: (chain, token) => `https://app.1inch.io/#/${CHAIN_SLUGS["1inch"][chain] || "1"}/simple/swap/ETH/${token}`,
+    chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "ftm", "blast", "mantle"],
+    resolveChain: R.chainId(),
+    buildUrl: (chain, token, slug) => `https://app.1inch.io/#/${slug}/simple/swap/ETH/${token}`,
   },
   {
     id: "photon-base",
@@ -75,10 +103,10 @@ const PLATFORMS = [
     buildUrl: (chain, token) => `https://photon-base.tinyastro.io/en/r/@rtunazzz/${token}`,
   },
   {
-    id: "gmgn-evm",
+    id: "gmgn",
     name: "GMGN",
     category: "trade",
-    chains: ["eth", "base", "bsc"],
+    chains: ["sol", "eth", "base", "bsc", "tron"],
     buildUrl: (chain, token) => `https://gmgn.ai/${chain}/token/rtuna_${token}`,
   },
   {
@@ -121,14 +149,39 @@ const PLATFORMS = [
     name: "FOMO",
     category: "trade",
     chains: ["sol", "eth", "base", "bsc"],
-    buildUrl: (chain, token) => `https://fomo.family/coin?address=${token}&chainId=${CHAIN_SLUGS.fomo[chain]}`,
+    resolveChain: R.chainId(),
+    buildUrl: (chain, token, slug) => `https://fomo.family/coin?address=${token}&chainId=${slug}`,
   },
   {
     id: "azura",
     name: "Azura",
     category: "trade",
     chains: ["sol", "eth", "base", "bsc"],
-    buildUrl: (chain, token) => `https://app.azura.xyz/spot/${CHAIN_SLUGS.azura[chain]}/${token}`,
+    resolveChain: R.chainId(),
+    buildUrl: (chain, token, slug) => `https://app.azura.xyz/spot/${slug}/${token}`,
+  },
+
+  {
+    id: "photon-tron",
+    name: "Photon",
+    category: "trade",
+    chains: ["tron"],
+    buildUrl: (chain, token) => `https://photon-tron.tinyastro.io/en/r/@rtunazzz/${token}`,
+  },
+
+  {
+    id: "maestro",
+    name: "Maestro",
+    category: "trade",
+    chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "tron", "ton"],
+    buildUrl: (chain, token) => `https://t.me/MaestroSniperBot?start=${token}-rtunazzz`,
+  },
+  {
+    id: "shuriken",
+    name: "Shuriken",
+    category: "trade",
+    chains: ["sui", "tron", "eth", "base", "bsc", "arb", "avax", "ftm"],
+    buildUrl: (chain, token) => `https://t.me/ShurikenTradeBot?start=${token}`,
   },
 
   {
@@ -142,9 +195,14 @@ const PLATFORMS = [
     id: "etherscan",
     name: "Etherscan",
     category: "explore",
-    chains: ["eth", "base", "bsc"],
+    chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "ftm", "blast", "mantle", "sonic"],
     buildUrl: (chain, token) => {
-      const domains = { eth: "etherscan.io", base: "basescan.org", bsc: "bscscan.com" };
+      const domains = {
+        eth: "etherscan.io", base: "basescan.org", bsc: "bscscan.com",
+        arb: "arbiscan.io", op: "optimistic.etherscan.io", matic: "polygonscan.com",
+        avax: "snowscan.xyz", ftm: "ftmscan.com", blast: "blastscan.io",
+        mantle: "mantlescan.xyz", sonic: "sonicscan.org",
+      };
       return `https://${domains[chain] || "etherscan.io"}/token/${token}`;
     },
   },
@@ -152,43 +210,48 @@ const PLATFORMS = [
     id: "blockscout",
     name: "Blockscout",
     category: "explore",
-    chains: ["eth", "base", "bsc"],
-    buildUrl: (chain, token) => `https://explorer.blockscout.com/address/${token}`,
+    chains: ["eth", "base", "arb", "matic"],
+    resolveChain: R.slug({ eth: "eth" }),
+    buildUrl: (chain, token, slug) => `https://${slug}.blockscout.com/address/${token}`,
   },
 
   {
     id: "dexscreener",
     name: "DexScreener",
     category: "chart",
-    chains: ["sol", "eth", "base", "bsc"],
-    buildUrl: (chain, token) => `https://dexscreener.com/${CHAIN_SLUGS.dexscreener[chain] || chain}/${token}`,
+    chains: ["sol", "sui", "tron", "ton", ...ALL_EVM],
+    resolveChain: R.slug(),
+    buildUrl: (chain, token, slug) => `https://dexscreener.com/${slug}/${token}`,
   },
   {
     id: "geckoterminal",
     name: "GeckoTerminal",
     category: "chart",
-    chains: ["sol", "eth", "base", "bsc"],
-    buildUrl: (chain, token) => `https://www.geckoterminal.com/${CHAIN_SLUGS.geckoterminal[chain] || chain}/pools/${token}`,
+    chains: ["sol", "sui", "tron", "ton", ...ALL_EVM],
+    resolveChain: R.slug({ eth: "eth", sui: "sui-network", matic: "polygon_pos", avax: "avax", ftm: "ftm" }),
+    buildUrl: (chain, token, slug) => `https://www.geckoterminal.com/${slug}/pools/${token}`,
   },
   {
     id: "dextools",
     name: "DEXTools",
     category: "chart",
-    chains: ["sol", "eth", "base", "bsc"],
-    buildUrl: (chain, token) => `https://www.dextools.io/app/en/${CHAIN_SLUGS.dextools[chain] || chain}/pair-explorer/${token}`,
+    chains: ["sol", "sui", "tron", "ton", ...ALL_EVM],
+    resolveChain: R.slug({ eth: "ether", bsc: "bnb" }),
+    buildUrl: (chain, token, slug) => `https://www.dextools.io/app/en/${slug}/pair-explorer/${token}`,
   },
   {
     id: "birdeye",
     name: "Birdeye",
     category: "chart",
-    chains: ["sol", "eth", "base", "bsc"],
-    buildUrl: (chain, token) => `https://birdeye.so/token/${token}?chain=${CHAIN_SLUGS.birdeye[chain] || chain}`,
+    chains: ["sol", "eth", "base", "bsc", "arb", "op", "avax", "sui"],
+    resolveChain: R.slug(),
+    buildUrl: (chain, token, slug) => `https://birdeye.so/token/${token}?chain=${slug}`,
   },
   {
     id: "defined",
     name: "Defined",
     category: "chart",
-    chains: ["sol", "eth", "base", "bsc"],
+    chains: ["sol", "eth", "base", "bsc", "arb", "op", "matic", "avax", "blast", "sui", "tron"],
     buildUrl: (chain, token) => `https://www.defined.fi/${chain}/${token}`,
   },
 ];

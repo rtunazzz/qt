@@ -42,11 +42,14 @@ function tryImport() {
 
   document.getElementById("import-decline").addEventListener("click", () => {
     banner.classList.remove("visible");
-    setTimeout(() => banner.remove(), 300);
+    setTimeout(() => {
+      banner.remove();
+      initSettings();
+    }, 300);
     window.history.replaceState({}, "", "/settings");
   });
 
-  return false;
+  return true;
 }
 
 function copyText(text) {
@@ -105,7 +108,7 @@ function saveCurrentPrefs() {
 
 function renderEcosystemDefaults(form, prefs) {
   for (const eco of ["sol", "evm"]) {
-    const chains = eco === "sol" ? ["sol"] : ["eth", "base", "bsc"];
+    const chains = chainsForEcosystem(eco);
 
     for (const action of ACTIONS) {
       const select = form.querySelector(`#${eco}-${action}`);
