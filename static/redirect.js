@@ -26,6 +26,16 @@ function parsePath() {
   return { chain, token, action };
 }
 
+function appendParams(url, allowed) {
+  if (!allowed?.length) return url;
+  const incoming = new URLSearchParams(window.location.search);
+  const dest = new URL(url);
+  for (const key of allowed) {
+    if (incoming.has(key)) dest.searchParams.set(key, incoming.get(key));
+  }
+  return dest.toString();
+}
+
 function redirect() {
   const route = parsePath();
   if (!route) return;
@@ -39,7 +49,8 @@ function redirect() {
   if (!platform) return;
 
   const slug = platform.resolveChain ? platform.resolveChain(route.chain) : route.chain;
-  window.location.replace(platform.buildUrl(route.chain, route.token, slug));
+  const url = platform.buildUrl(route.chain, route.token, slug);
+  window.location.replace(appendParams(url, platform.params));
 }
 
 redirect();
