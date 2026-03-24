@@ -19,12 +19,7 @@ qt.rtuna.dev/{chain}/{token}/explore    → user's preferred block explorer
 
 ## Supported Chains
 
-| ID     | Chain    |
-|--------|----------|
-| `sol`  | Solana   |
-| `eth`  | Ethereum |
-| `base` | Base     |
-| `bsc`  | BSC      |
+All chain shortcodes are defined as keys in the `CHAINS` object in [`static/config.js`](static/config.js). Use those keys (e.g. `sol`, `eth`, `base`, `bsc`, `arb`) as the `{chain}` segment in URLs.
 
 ## When to Use qt Links
 
@@ -62,7 +57,7 @@ https://qt.rtuna.dev/eth/{token}/explore
 
 ## Guidelines
 
-- Always use the chain shortcode (`sol`, `eth`, `base`, `bsc`), not the full name
+- Always use the chain shortcode (keys from `CHAINS` in `static/config.js`), not the full name
 - The token should be the contract/mint address
 - Default action (no suffix) redirects to trade — use this when the intent is general
 - Append `/trade`, `/chart`, or `/explore` when the intent is specific
