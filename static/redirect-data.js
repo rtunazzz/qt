@@ -44,7 +44,21 @@ function resolveSlug(overrides, chain) {
   return overrides?.[chain] ?? CHAINS[chain].slug ?? chain;
 }
 
-const ALL_EVM = Object.entries(CHAINS).filter(([_, c]) => c.ecosystem === "evm").map(([id]) => id);
+const COOKIE_NAME = "qt";
+
+function chainsForEcosystem(eco) {
+  return Object.entries(CHAINS).filter(([_, c]) => c.ecosystem === eco).map(([id]) => id);
+}
+
+function getPlatformsForChain(chain, category) {
+  return PLATFORMS.filter((p) => p.category === category && p.chains.includes(chain));
+}
+
+function getEcosystem(chain) {
+  return CHAINS[chain]?.ecosystem;
+}
+
+const ALL_EVM = chainsForEcosystem("evm");
 
 const PLATFORMS = [
   { id: "jupiter", name: "Jupiter", category: "trade", chains: ["sol"], params: ["sell", "buy"],
@@ -125,10 +139,21 @@ const DEFAULT_PREFS = {
   overrides: {},
 };
 
+function parseRoute(pathname) {
+  const parts = pathname.split("/").filter(Boolean);
+  if (parts.length < 2 || parts.length > 3) return null;
+  const chain = parts[0].toLowerCase();
+  const token = parts[1];
+  const action = parts[2]?.toLowerCase() || "trade";
+  if (!CHAINS[chain]) return null;
+  if (!ACTIONS.includes(action)) return null;
+  return { chain, token, action };
+}
+
 function buildRedirectUrl(platform, chain, token, searchParams) {
   const s = platform.resolveChain ? platform.resolveChain(chain) : chain;
   let dest = platform.buildUrl(chain, token, s);
-  if (platform.params?.length) {
+  if (platform.params?.length && platform.params.some((k) => searchParams.has(k))) {
     const target = new URL(dest);
     for (const key of platform.params) {
       if (searchParams.has(key)) target.searchParams.set(key, searchParams.get(key));
@@ -145,6 +170,6 @@ function resolve(prefs, chain, action) {
   if (!eco) return null;
   const ecoDefault = prefs[eco]?.[action];
   if (ecoDefault) return ecoDefault;
-  const available = PLATFORMS.filter((p) => p.category === action && p.chains.includes(chain));
-  return available.length ? available[0].id : null;
+  const first = PLATFORMS.find((p) => p.category === action && p.chains.includes(chain));
+  return first?.id ?? null;
 }

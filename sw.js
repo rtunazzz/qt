@@ -8,18 +8,11 @@ self.addEventListener("fetch", (e) => {
   if (!self.cookieStore) return;
 
   const url = new URL(e.request.url);
-  const parts = url.pathname.split("/").filter(Boolean);
-  if (parts.length < 2 || parts.length > 3) return;
-
-  const chain = parts[0].toLowerCase();
-  const token = parts[1];
-  const action = parts[2]?.toLowerCase() || "trade";
-
-  if (!CHAINS[chain]) return;
-  if (!ACTIONS.includes(action)) return;
+  const route = parseRoute(url.pathname);
+  if (!route) return;
 
   e.respondWith(
-    self.cookieStore.get("qt").then((cookie) => {
+    self.cookieStore.get(COOKIE_NAME).then((cookie) => {
       let prefs = DEFAULT_PREFS;
       if (cookie?.value) {
         try { prefs = JSON.parse(atob(cookie.value)); } catch (err) {
@@ -27,15 +20,15 @@ self.addEventListener("fetch", (e) => {
         }
       }
 
-      const platformId = resolve(prefs, chain, action);
+      const platformId = resolve(prefs, route.chain, route.action);
       if (!platformId) return fetch(e.request);
 
       const platform = PLATFORM_MAP[platformId];
       if (!platform) return fetch(e.request);
 
-      return Response.redirect(buildRedirectUrl(platform, chain, token, url.searchParams), 302);
+      return Response.redirect(buildRedirectUrl(platform, route.chain, route.token, url.searchParams), 302);
     }).catch((err) => {
-      console.warn("[qt sw] redirect failed, falling through to edge:", err.message);
+      console.warn("[qt] sw redirect failed, falling through to edge:", err.message);
       return fetch(e.request);
     })
   );
