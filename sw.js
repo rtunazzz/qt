@@ -16,7 +16,7 @@ self.addEventListener("fetch", (e) => {
       let prefs = DEFAULT_PREFS;
       if (cookie?.value) {
         try { prefs = JSON.parse(atob(cookie.value)); } catch (err) {
-          console.warn("[qt] failed to parse preferences cookie:", err.message);
+          console.warn("[qt sw] failed to parse preferences cookie:", err.message);
         }
       }
 
@@ -28,7 +28,7 @@ self.addEventListener("fetch", (e) => {
 
       return Response.redirect(buildRedirectUrl(platform, route.chain, route.token, url.searchParams), 302);
     }).catch((err) => {
-      console.warn("[qt] sw redirect failed, falling through to edge:", err.message);
+      console.warn("[qt sw] redirect failed, falling through to edge:", err.message);
       return fetch(e.request);
     })
   );
