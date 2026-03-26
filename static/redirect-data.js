@@ -59,7 +59,7 @@ const PLATFORMS = [
     resolveChain: (c) => resolveSlug({ bsc: "bnb" }, c),
     buildUrl: (c, t, s) => `https://app.uniswap.org/swap?outputCurrency=${t}&chain=${s}` },
   { id: "1inch", name: "1inch", category: "trade", chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "ftm", "blast", "mantle"],
-    resolveChain: (c) => resolveChainId(c),
+    resolveChain: resolveChainId,
     buildUrl: (c, t, s) => `https://app.1inch.io/#/${s}/simple/swap/ETH/${t}` },
   { id: "photon-base", name: "Photon", category: "trade", chains: ["base"],
     buildUrl: (c, t) => `https://photon-base.tinyastro.io/en/r/@rtunazzz/${t}` },
@@ -78,10 +78,10 @@ const PLATFORMS = [
   { id: "bloom-evm", name: "Bloom", category: "trade", chains: ["eth", "base", "bsc", "hyperevm"],
     buildUrl: (c, t) => `https://t.me/BloomEVMbot?start=ref_tuna_ca_${t}` },
   { id: "fomo", name: "FOMO", category: "trade", chains: ["sol", "eth", "base", "bsc"],
-    resolveChain: (c) => resolveChainId(c),
+    resolveChain: resolveChainId,
     buildUrl: (c, t, s) => `https://fomo.family/coin?address=${t}&chainId=${s}` },
   { id: "azura", name: "Azura", category: "trade", chains: ["sol", "eth", "base", "bsc"],
-    resolveChain: (c) => resolveChainId(c),
+    resolveChain: resolveChainId,
     buildUrl: (c, t, s) => `https://app.azura.xyz/spot/${s}/${t}` },
   { id: "photon-tron", name: "Photon", category: "trade", chains: ["tron"],
     buildUrl: (c, t) => `https://photon-tron.tinyastro.io/en/r/@rtunazzz/${t}` },
@@ -124,6 +124,19 @@ const DEFAULT_PREFS = {
   evm: { trade: "sigma-vip", chart: "dexscreener", explore: "etherscan" },
   overrides: {},
 };
+
+function buildRedirectUrl(platform, chain, token, searchParams) {
+  const s = platform.resolveChain ? platform.resolveChain(chain) : chain;
+  let dest = platform.buildUrl(chain, token, s);
+  if (platform.params?.length) {
+    const target = new URL(dest);
+    for (const key of platform.params) {
+      if (searchParams.has(key)) target.searchParams.set(key, searchParams.get(key));
+    }
+    dest = target.toString();
+  }
+  return dest;
+}
 
 function resolve(prefs, chain, action) {
   const override = prefs.overrides?.[chain]?.[action];

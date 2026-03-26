@@ -4,7 +4,8 @@ function readPrefs(cookieHeader) {
   if (!match) return DEFAULT_PREFS;
   try {
     return JSON.parse(atob(match[1]));
-  } catch {
+  } catch (err) {
+    console.error("[qt] corrupt preferences cookie:", err.message);
     return DEFAULT_PREFS;
   }
 }
@@ -29,23 +30,17 @@ export async function onRequest(context) {
   const platform = PLATFORM_MAP[platformId];
   if (!platform) return context.next();
 
-  const s = platform.resolveChain ? platform.resolveChain(chain) : chain;
-  let dest = platform.buildUrl(chain, token, s);
-
-  if (platform.params?.length) {
-    const incoming = url.searchParams;
-    const target = new URL(dest);
-    for (const key of platform.params) {
-      if (incoming.has(key)) target.searchParams.set(key, incoming.get(key));
-    }
-    dest = target.toString();
+  try {
+    const dest = buildRedirectUrl(platform, chain, token, url.searchParams);
+    return new Response(null, {
+      status: 302,
+      headers: {
+        Location: dest,
+        "Cache-Control": "private, no-store",
+      },
+    });
+  } catch (err) {
+    console.error(`[qt] redirect build failed for ${chain}/${token} -> ${platformId}:`, err.message);
+    return context.next();
   }
-
-  return new Response(null, {
-    status: 302,
-    headers: {
-      Location: dest,
-      "Cache-Control": "private, no-store",
-    },
-  });
 }

@@ -5,6 +5,7 @@ self.addEventListener("activate", (e) => e.waitUntil(self.clients.claim()));
 
 self.addEventListener("fetch", (e) => {
   if (e.request.mode !== "navigate") return;
+  if (!self.cookieStore) return;
 
   const url = new URL(e.request.url);
   const parts = url.pathname.split("/").filter(Boolean);
@@ -21,7 +22,9 @@ self.addEventListener("fetch", (e) => {
     self.cookieStore.get("qt").then((cookie) => {
       let prefs = DEFAULT_PREFS;
       if (cookie?.value) {
-        try { prefs = JSON.parse(atob(cookie.value)); } catch {}
+        try { prefs = JSON.parse(atob(cookie.value)); } catch (err) {
+          console.warn("[qt] failed to parse preferences cookie:", err.message);
+        }
       }
 
       const platformId = resolve(prefs, chain, action);
@@ -30,19 +33,7 @@ self.addEventListener("fetch", (e) => {
       const platform = PLATFORM_MAP[platformId];
       if (!platform) return fetch(e.request);
 
-      const s = platform.resolveChain ? platform.resolveChain(chain) : chain;
-      let dest = platform.buildUrl(chain, token, s);
-
-      if (platform.params?.length) {
-        const incoming = url.searchParams;
-        const target = new URL(dest);
-        for (const key of platform.params) {
-          if (incoming.has(key)) target.searchParams.set(key, incoming.get(key));
-        }
-        dest = target.toString();
-      }
-
-      return Response.redirect(dest, 302);
-    })
+      return Response.redirect(buildRedirectUrl(platform, chain, token, url.searchParams), 302);
+    }).catch(() => fetch(e.request))
   );
 });
