@@ -34,6 +34,9 @@ self.addEventListener("fetch", (e) => {
       if (!platform) return fetch(e.request);
 
       return Response.redirect(buildRedirectUrl(platform, chain, token, url.searchParams), 302);
-    }).catch(() => fetch(e.request))
+    }).catch((err) => {
+      console.warn("[qt sw] redirect failed, falling through to edge:", err.message);
+      return fetch(e.request);
+    })
   );
 });
