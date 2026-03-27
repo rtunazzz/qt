@@ -105,14 +105,24 @@ const PLATFORMS = [
     buildUrl: (c, t) => `https://t.me/ShurikenTradeBot?start=${t}` },
   { id: "solscan", name: "Solscan", category: "explore", chains: ["sol"],
     buildUrl: (c, t) => `https://solscan.io/token/${t}` },
-  { id: "etherscan", name: "Etherscan", category: "explore", chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "ftm", "blast", "mantle", "sonic"],
+  { id: "etherscan", name: "Etherscan", category: "explore", chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "ftm", "blast", "mantle", "sonic", "worldchain", "apechain", "unichain", "monad", "abstract", "hyperevm", "plasma", "megaeth", "berachain"],
     buildUrl: (c, t) => {
-      const d = { eth: "etherscan.io", base: "basescan.org", bsc: "bscscan.com", arb: "arbiscan.io", op: "optimistic.etherscan.io", matic: "polygonscan.com", avax: "snowscan.xyz", ftm: "ftmscan.com", blast: "blastscan.io", mantle: "mantlescan.xyz", sonic: "sonicscan.org" };
+      const d = { eth: "etherscan.io", base: "basescan.org", bsc: "bscscan.com", arb: "arbiscan.io", op: "optimistic.etherscan.io", matic: "polygonscan.com", avax: "snowscan.xyz", ftm: "ftmscan.com", blast: "blastscan.io", mantle: "mantlescan.xyz", sonic: "sonicscan.org", worldchain: "worldscan.org", apechain: "apescan.io", unichain: "uniscan.xyz", monad: "monadscan.com", abstract: "abscan.org", hyperevm: "hyperevmscan.io", plasma: "plasmascan.to", megaeth: "mega.etherscan.io", berachain: "beratrail.io" };
       return `https://${d[c] || "etherscan.io"}/token/${t}`;
     } },
-  { id: "blockscout", name: "Blockscout", category: "explore", chains: ["eth", "base", "arb", "matic"],
-    resolveChain: (c) => resolveSlug({ eth: "eth" }, c),
-    buildUrl: (c, t, s) => `https://${s}.blockscout.com/address/${t}` },
+  { id: "blockscout", name: "Blockscout", category: "explore", chains: ["eth", "base", "arb", "matic", "soneium", "shape", "story", "morph", "ink", "flow", "tempo"],
+    buildUrl: (c, t) => {
+      const d = { eth: "eth.blockscout.com", base: "base.blockscout.com", arb: "arbitrum.blockscout.com", matic: "polygon.blockscout.com", soneium: "soneium.blockscout.com", shape: "shapescan.xyz", story: "www.storyscan.io", morph: "explorer.morph.network", ink: "explorer.inkonchain.com", flow: "evm.flowscan.io", tempo: "explore.tempo.xyz" };
+      return `https://${d[c] || "explorer.blockscout.com"}/address/${t}`;
+    } },
+  { id: "suiscan", name: "Suiscan", category: "explore", chains: ["sui"],
+    buildUrl: (c, t) => `https://suiscan.xyz/mainnet/coin/${t}` },
+  { id: "tronscan", name: "Tronscan", category: "explore", chains: ["tron"],
+    buildUrl: (c, t) => `https://tronscan.org/#/token20/${t}` },
+  { id: "mempool", name: "Mempool", category: "explore", chains: ["btc"],
+    buildUrl: (c, t) => `https://mempool.space/address/${t}` },
+  { id: "oklink", name: "OKLink", category: "explore", chains: ["xlayer"],
+    buildUrl: (c, t) => `https://www.oklink.com/x-layer/token/${t}` },
   { id: "dexscreener", name: "DexScreener", category: "chart", chains: ["sol", "sui", "tron", "ton", ...ALL_EVM], params: ["maker"],
     resolveChain: (c) => resolveSlug(null, c),
     buildUrl: (c, t, s) => `https://dexscreener.com/${s}/${t}` },
@@ -136,6 +146,9 @@ const ACTIONS = ["trade", "chart", "explore"];
 const DEFAULT_PREFS = {
   sol: { trade: "axiom", chart: "dexscreener", explore: "solscan" },
   evm: { trade: "sigma-vip", chart: "dexscreener", explore: "etherscan" },
+  sui: { explore: "suiscan" },
+  tron: { explore: "tronscan" },
+  btc: { explore: "mempool" },
   overrides: {},
 };
 
