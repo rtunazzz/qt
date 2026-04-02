@@ -135,7 +135,7 @@ const PLATFORMS = [
   { id: "birdeye", name: "Birdeye", category: "chart", chains: ["sol", "eth", "base", "bsc", "arb", "op", "avax", "sui"],
     resolveChain: (c) => resolveSlug(null, c),
     buildUrl: (c, t, s) => `https://birdeye.so/token/${t}?chain=${s}` },
-  { id: "defined", name: "Defined", category: "chart", chains: ["sol", "eth", "base", "bsc", "arb", "op", "matic", "avax", "blast", "sui", "tron"], params: ["quoteToken", "preferredQuoteTokenAddress", "maker"],
+  { id: "defined", name: "Defined", category: "chart", chains: ["sol", "sui", "tron", ...ALL_EVM], params: ["quoteToken", "preferredQuoteTokenAddress", "maker"],
     buildUrl: (c, t) => `https://www.defined.fi/${c}/${t}` },
 ];
 
