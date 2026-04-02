@@ -182,7 +182,7 @@ function resolve(prefs, chain, action) {
   const eco = CHAINS[chain]?.ecosystem;
   if (!eco) return null;
   const ecoDefault = prefs[eco]?.[action];
-  if (ecoDefault) return ecoDefault;
+  if (ecoDefault && PLATFORM_MAP[ecoDefault]?.chains.includes(chain)) return ecoDefault;
   const first = PLATFORMS.find((p) => p.category === action && p.chains.includes(chain));
   return first?.id ?? null;
 }
