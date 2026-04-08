@@ -9,9 +9,9 @@ jobs:
       - uses: actions/checkout@v4
       - name: Prepare deploy directory
         run: |
-          mkdir -p dist dist/functions
-          cp -r index.html favicon.svg sw.js _headers _routes.json static settings assets SKILL.md dist/
-          cat static/redirect-data.js functions/handler.js > 'dist/functions/[[path]].js'
+          mkdir -p dist
+          cp -r index.html favicon.svg sw.js _headers static settings assets SKILL.md dist/
+          cat static/redirect-data.js worker.js > dist/_worker.js
       - uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
