@@ -46,6 +46,29 @@ function resolveSlug(overrides, chain) {
 
 const COOKIE_NAME = "qt";
 
+const DEFAULT_REFLINKS = {
+  default: "rtuna",
+  overrides: {
+    "photon-sol":  "rtunazzz",
+    "photon-base": "rtunazzz",
+    "photon-tron": "rtunazzz",
+    "based":       "rtunazzz",
+    "based-vip":   "rtunazzz",
+    "banana":      "rtunazzz",
+    "maestro":     "rtunazzz",
+    "bloom-evm":   "tuna",
+    "padre":       "tuna",
+    "sigma":       "x1865619192",
+    "sigma-vip":   "x1865619192",
+  },
+};
+
+function resolveRef(reflinks, platformId) {
+  const r = reflinks || DEFAULT_REFLINKS;
+  if (r.overrides && r.overrides[platformId]) return r.overrides[platformId];
+  return r.default || "rtuna";
+}
+
 function chainsForEcosystem(eco) {
   return Object.entries(CHAINS).filter(([_, c]) => c.ecosystem === eco).map(([id]) => id);
 }
@@ -64,11 +87,11 @@ const PLATFORMS = [
   { id: "jupiter", name: "Jupiter", category: "trade", chains: ["sol"], params: ["sell", "buy"],
     buildUrl: (c, t) => `https://jup.ag/swap/SOL-${t}` },
   { id: "photon-sol", name: "Photon", category: "trade", chains: ["sol"],
-    buildUrl: (c, t) => `https://photon-sol.tinyastro.io/en/r/@rtunazzz/${t}` },
+    buildUrl: (c, t, s, ref) => `https://photon-sol.tinyastro.io/en/r/@${ref}/${t}` },
   { id: "axiom", name: "Axiom", category: "trade", chains: ["sol"],
-    buildUrl: (c, t) => `https://axiom.trade/t/${t}/@rtuna` },
+    buildUrl: (c, t, s, ref) => `https://axiom.trade/t/${t}/@${ref}` },
   { id: "bloom-sol", name: "Bloom", category: "trade", chains: ["sol"],
-    buildUrl: (c, t) => `https://t.me/BloomSolana_bot?start=ref_rtuna_ca_${t}` },
+    buildUrl: (c, t, s, ref) => `https://t.me/BloomSolana_bot?start=ref_${ref}_ca_${t}` },
   { id: "uniswap", name: "Uniswap", category: "trade", chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "blast", "unichain"], params: ["inputCurrency"],
     resolveChain: (c) => resolveSlug({ bsc: "bnb" }, c),
     buildUrl: (c, t, s) => `https://app.uniswap.org/swap?outputCurrency=${t}&chain=${s}` },
@@ -76,21 +99,21 @@ const PLATFORMS = [
     resolveChain: resolveChainId,
     buildUrl: (c, t, s) => `https://app.1inch.io/#/${s}/simple/swap/ETH/${t}` },
   { id: "photon-base", name: "Photon", category: "trade", chains: ["base"],
-    buildUrl: (c, t) => `https://photon-base.tinyastro.io/en/r/@rtunazzz/${t}` },
+    buildUrl: (c, t, s, ref) => `https://photon-base.tinyastro.io/en/r/@${ref}/${t}` },
   { id: "gmgn", name: "GMGN", category: "trade", chains: ["sol", "eth", "base", "bsc", "tron", "monad"],
-    buildUrl: (c, t) => `https://gmgn.ai/${c}/token/rtuna_${t}` },
+    buildUrl: (c, t, s, ref) => `https://gmgn.ai/${c}/token/${ref}_${t}` },
   { id: "sigma-vip", name: "Sigma VIP", category: "trade", chains: ["eth", "base", "bsc"],
-    buildUrl: (c, t) => `https://t.me/SigmaTradingVIP_bot?start=x1865619192-${t}-${c}` },
+    buildUrl: (c, t, s, ref) => `https://t.me/SigmaTradingVIP_bot?start=${ref}-${t}-${c}` },
   { id: "sigma", name: "Sigma", category: "trade", chains: ["eth", "base", "bsc"],
-    buildUrl: (c, t) => `https://t.me/Sigma_buyBot?start=x1865619192-${t}-${c}` },
+    buildUrl: (c, t, s, ref) => `https://t.me/Sigma_buyBot?start=${ref}-${t}-${c}` },
   { id: "based", name: "Based Bot", category: "trade", chains: ["sol", "eth", "base", "bsc", "arb", "avax", "abstract", "hyperevm", "ink", "story", "xlayer", "plasma", "unichain", "monad", "megaeth", "tempo"],
-    buildUrl: (c, t) => `https://t.me/based_eth_bot?start=r_rtunazzz_b_${t}` },
+    buildUrl: (c, t, s, ref) => `https://t.me/based_eth_bot?start=r_${ref}_b_${t}` },
   { id: "based-vip", name: "Based Bot VIP", category: "trade", chains: ["sol", "eth", "base", "bsc", "arb", "avax", "abstract", "hyperevm", "ink", "story", "xlayer", "plasma", "unichain", "monad", "megaeth", "tempo"],
-    buildUrl: (c, t) => `https://t.me/based_vip_bot?start=r_rtunazzz_b_${t}` },
+    buildUrl: (c, t, s, ref) => `https://t.me/based_vip_bot?start=r_${ref}_b_${t}` },
   { id: "banana", name: "Banana Gun", category: "trade", chains: ["eth", "base", "bsc"],
-    buildUrl: (c, t) => `https://t.me/BananaGunSniper_bot?start=snp_rtunazzz_${t}` },
+    buildUrl: (c, t, s, ref) => `https://t.me/BananaGunSniper_bot?start=snp_${ref}_${t}` },
   { id: "bloom-evm", name: "Bloom", category: "trade", chains: ["eth", "base", "bsc", "hyperevm"],
-    buildUrl: (c, t) => `https://t.me/BloomEVMbot?start=ref_tuna_ca_${t}` },
+    buildUrl: (c, t, s, ref) => `https://t.me/BloomEVMbot?start=ref_${ref}_ca_${t}` },
   { id: "fomo", name: "FOMO", category: "trade", chains: ["sol", "eth", "base", "bsc"],
     resolveChain: resolveChainId,
     buildUrl: (c, t, s) => `https://fomo.family/coin?address=${t}&chainId=${s}` },
@@ -98,12 +121,12 @@ const PLATFORMS = [
     resolveChain: resolveChainId,
     buildUrl: (c, t, s) => `https://app.azura.xyz/spot/${s}/${t}` },
   { id: "photon-tron", name: "Photon", category: "trade", chains: ["tron"],
-    buildUrl: (c, t) => `https://photon-tron.tinyastro.io/en/r/@rtunazzz/${t}` },
+    buildUrl: (c, t, s, ref) => `https://photon-tron.tinyastro.io/en/r/@${ref}/${t}` },
   { id: "maestro", name: "Maestro", category: "trade", chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "tron", "ton", "monad"],
-    buildUrl: (c, t) => `https://t.me/MaestroSniperBot?start=${t}-rtunazzz` },
+    buildUrl: (c, t, s, ref) => `https://t.me/MaestroSniperBot?start=${t}-${ref}` },
   { id: "padre", name: "Padre", category: "trade", chains: ["sol", "bsc"],
     resolveChain: (c) => resolveSlug(null, c),
-    buildUrl: (c, t, s) => `https://trade.padre.gg/trade/${s}/${t}?rk=tuna` },
+    buildUrl: (c, t, s, ref) => `https://trade.padre.gg/trade/${s}/${t}?rk=${ref}` },
   { id: "shuriken", name: "Shuriken", category: "trade", chains: ["sui", "tron", "eth", "base", "bsc", "arb", "avax", "ftm"],
     buildUrl: (c, t) => `https://t.me/ShurikenTradeBot?start=${t}` },
   { id: "solscan", name: "Solscan", category: "explore", chains: ["sol"],
@@ -166,9 +189,10 @@ function parseRoute(pathname) {
   return { chain, token, action };
 }
 
-function buildRedirectUrl(platform, chain, token, searchParams) {
+function buildRedirectUrl(platform, chain, token, searchParams, reflinks) {
   const s = platform.resolveChain ? platform.resolveChain(chain) : chain;
-  let dest = platform.buildUrl(chain, token, s);
+  const ref = resolveRef(reflinks, platform.id);
+  let dest = platform.buildUrl(chain, token, s, ref);
   if (platform.params?.length && platform.params.some((k) => searchParams.has(k))) {
     const target = new URL(dest);
     for (const key of platform.params) {
