@@ -20,6 +20,7 @@ Static site (vanilla HTML/CSS/JS) deployed to Cloudflare Pages. No build step, n
 2. Choose resolver: `resolveChainId(c)` (numeric chain IDs), `resolveSlug(overrides, c)` (canonical names), or omit (platforms that use the chain key directly need no resolver)
 3. If using `resolveSlug` and a platform uses non-standard names for some chains, pass overrides: `resolveSlug({ eth: "ether" }, c)`
 4. Add `<span class="platform-tag {category}">` to the hero platforms grid in `index.html`
+5. If the platform uses a referral code, accept `(c, t, s, ref)` in `buildUrl` and template `${ref}` into the slug position. Add the platform's current ref to `DEFAULT_REFLINKS.overrides` in `static/redirect-data.js` (skip if it equals the default slug `rtuna`), and document the new `REF_<PLATFORM_ID>` env var in the README table. Platform ids must not contain underscores — they collide with the `_` → `-` env var name mapping.
 
 ## Adding a chain
 
