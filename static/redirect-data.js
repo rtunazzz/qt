@@ -150,7 +150,7 @@ const ACTIONS = ["trade", "chart", "explore"];
 
 const DEFAULT_PREFS = {
   sol: { trade: "axiom", chart: "dexscreener", explore: "solscan" },
-  evm: { trade: "sigma-vip", chart: "dexscreener", explore: "etherscan" },
+  evm: { trade: "based", chart: "dexscreener", explore: "etherscan" },
   sui: { explore: "suiscan" },
   tron: { explore: "tronscan" },
   btc: { explore: "mempool" },
