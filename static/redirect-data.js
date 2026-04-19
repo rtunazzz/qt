@@ -87,6 +87,8 @@ const PLATFORMS = [
     buildUrl: (c, t) => `https://t.me/based_eth_bot?start=r_rtunazzz_b_${t}` },
   { id: "based-vip", name: "Based Bot VIP", category: "trade", chains: ["sol", "eth", "base", "bsc", "arb", "avax", "abstract", "hyperevm", "ink", "story", "xlayer", "plasma", "unichain", "monad", "megaeth", "tempo"],
     buildUrl: (c, t) => `https://t.me/based_vip_bot?start=r_rtunazzz_b_${t}` },
+  { id: "based-web", name: "Based Bot Web", category: "trade", chains: ["sol", "eth", "base", "bsc", "arb", "avax", "abstract", "hyperevm", "ink", "story", "xlayer", "plasma", "unichain", "monad", "megaeth", "tempo"],
+    buildUrl: (c, t) => `https://basedbot.app/token/${c}/${t}?ref=rtunazzz` },
   { id: "banana", name: "Banana Gun", category: "trade", chains: ["eth", "base", "bsc"],
     buildUrl: (c, t) => `https://t.me/BananaGunSniper_bot?start=snp_rtunazzz_${t}` },
   { id: "bloom-evm", name: "Bloom", category: "trade", chains: ["eth", "base", "bsc", "hyperevm"],
