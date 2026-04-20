@@ -122,6 +122,12 @@ function renderEcosystemDefaults(form, prefs) {
       }
 
       select.innerHTML = "";
+      if (action === "chart") {
+        const opt = document.createElement("option");
+        opt.value = SAME_AS_TRADE;
+        opt.textContent = "Same as Trading";
+        select.appendChild(opt);
+      }
       for (const [id, p] of platforms) {
         const opt = document.createElement("option");
         opt.value = id;
@@ -129,8 +135,19 @@ function renderEcosystemDefaults(form, prefs) {
         select.appendChild(opt);
       }
 
-      select.value = prefs[eco]?.[action] || select.options[0]?.value || "";
+      const stored = prefs[eco]?.[action];
+      const firstReal = [...select.options].find((o) => o.value && o.value !== SAME_AS_TRADE);
+      select.value = stored || firstReal?.value || select.options[0]?.value || "";
       select.addEventListener("change", saveCurrentPrefs);
+
+      if (action === "chart") {
+        const hint = document.querySelector(`.hint-field[data-hint-for="${eco}-chart"]`);
+        if (hint) {
+          const sync = () => { hint.hidden = select.value !== SAME_AS_TRADE; };
+          sync();
+          select.addEventListener("change", sync);
+        }
+      }
     }
   }
 }
@@ -153,6 +170,10 @@ function renderOverrides() {
     const chain = CHAINS[chainId];
     if (!chain) continue;
     for (const [action, platformId] of Object.entries(actions)) {
+      if (action === "chart" && platformId === SAME_AS_TRADE) {
+        items.push({ chainId, chain, action, platform: { name: "Same as Trading" } });
+        continue;
+      }
       const platform = PLATFORM_MAP[platformId];
       if (!platform) continue;
       items.push({ chainId, chain, action, platform });
@@ -224,9 +245,12 @@ function initAddOverride() {
       return;
     }
 
-    setSelectOptions(platformSelect, "Platform...",
-      getPlatformsForChain(chainSelect.value, actionSelect.value)
-        .map((p) => [p.id, p.name]));
+    const options = getPlatformsForChain(chainSelect.value, actionSelect.value)
+      .map((p) => [p.id, p.name]);
+    if (actionSelect.value === "chart" && getPlatformsForChain(chainSelect.value, "trade").length) {
+      options.unshift([SAME_AS_TRADE, "Same as Trading"]);
+    }
+    setSelectOptions(platformSelect, "Platform...", options);
   });
 
   platformSelect.addEventListener("change", () => {

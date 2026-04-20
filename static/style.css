@@ -243,6 +243,10 @@ select:focus {
   line-height: 1.4;
 }
 
+.hint-field {
+  margin: -0.1rem 0 0.6rem;
+}
+
 code {
   font-family: var(--mono);
   font-size: 0.72rem;

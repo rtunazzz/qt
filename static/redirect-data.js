@@ -51,7 +51,7 @@ function chainsForEcosystem(eco) {
 }
 
 function getPlatformsForChain(chain, category) {
-  return PLATFORMS.filter((p) => p.category === category && p.chains.includes(chain));
+  return PLATFORMS.filter((p) => p.categories.includes(category) && p.chains.includes(chain));
 }
 
 function getEcosystem(chain) {
@@ -61,86 +61,86 @@ function getEcosystem(chain) {
 const ALL_EVM = chainsForEcosystem("evm");
 
 const PLATFORMS = [
-  { id: "jupiter", name: "Jupiter", category: "trade", chains: ["sol"], params: ["sell", "buy"],
+  { id: "jupiter", name: "Jupiter", categories: ["trade", "chart"], chains: ["sol"], params: ["sell", "buy"],
     buildUrl: (c, t) => `https://jup.ag/swap/SOL-${t}` },
-  { id: "photon-sol", name: "Photon", category: "trade", chains: ["sol"],
+  { id: "photon-sol", name: "Photon", categories: ["trade", "chart"], chains: ["sol"],
     buildUrl: (c, t) => `https://photon-sol.tinyastro.io/en/r/@rtunazzz/${t}` },
-  { id: "axiom", name: "Axiom", category: "trade", chains: ["sol"],
+  { id: "axiom", name: "Axiom", categories: ["trade", "chart"], chains: ["sol"],
     buildUrl: (c, t) => `https://axiom.trade/t/${t}/@rtuna` },
-  { id: "bloom-sol", name: "Bloom", category: "trade", chains: ["sol"],
+  { id: "bloom-sol", name: "Bloom", categories: ["trade"], chains: ["sol"],
     buildUrl: (c, t) => `https://t.me/BloomSolana_bot?start=ref_rtuna_ca_${t}` },
-  { id: "uniswap", name: "Uniswap", category: "trade", chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "blast", "unichain"], params: ["inputCurrency"],
+  { id: "uniswap", name: "Uniswap", categories: ["trade", "chart"], chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "blast", "unichain"], params: ["inputCurrency"],
     resolveChain: (c) => resolveSlug({ bsc: "bnb" }, c),
     buildUrl: (c, t, s) => `https://app.uniswap.org/swap?outputCurrency=${t}&chain=${s}` },
-  { id: "1inch", name: "1inch", category: "trade", chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "ftm", "blast", "mantle"],
+  { id: "1inch", name: "1inch", categories: ["trade"], chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "ftm", "blast", "mantle"],
     resolveChain: resolveChainId,
     buildUrl: (c, t, s) => `https://app.1inch.io/#/${s}/simple/swap/ETH/${t}` },
-  { id: "photon-base", name: "Photon", category: "trade", chains: ["base"],
+  { id: "photon-base", name: "Photon", categories: ["trade", "chart"], chains: ["base"],
     buildUrl: (c, t) => `https://photon-base.tinyastro.io/en/r/@rtunazzz/${t}` },
-  { id: "gmgn", name: "GMGN", category: "trade", chains: ["sol", "eth", "base", "bsc", "tron", "monad"],
+  { id: "gmgn", name: "GMGN", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "tron", "monad"],
     buildUrl: (c, t) => `https://gmgn.ai/${c}/token/rtuna_${t}` },
-  { id: "sigma-vip", name: "Sigma VIP", category: "trade", chains: ["eth", "base", "bsc"],
+  { id: "sigma-vip", name: "Sigma VIP", categories: ["trade"], chains: ["eth", "base", "bsc"],
     buildUrl: (c, t) => `https://t.me/SigmaTradingVIP_bot?start=x1865619192-${t}-${c}` },
-  { id: "sigma", name: "Sigma", category: "trade", chains: ["eth", "base", "bsc"],
+  { id: "sigma", name: "Sigma", categories: ["trade"], chains: ["eth", "base", "bsc"],
     buildUrl: (c, t) => `https://t.me/Sigma_buyBot?start=x1865619192-${t}-${c}` },
-  { id: "based", name: "Based Bot", category: "trade", chains: ["sol", "eth", "base", "bsc", "arb", "avax", "abstract", "hyperevm", "ink", "story", "xlayer", "plasma", "unichain", "monad", "megaeth", "tempo"],
+  { id: "based", name: "Based Bot", categories: ["trade"], chains: ["sol", "eth", "base", "bsc", "arb", "avax", "abstract", "hyperevm", "ink", "story", "xlayer", "plasma", "unichain", "monad", "megaeth", "tempo"],
     buildUrl: (c, t) => `https://t.me/based_eth_bot?start=r_rtunazzz_b_${t}` },
-  { id: "based-vip", name: "Based Bot VIP", category: "trade", chains: ["sol", "eth", "base", "bsc", "arb", "avax", "abstract", "hyperevm", "ink", "story", "xlayer", "plasma", "unichain", "monad", "megaeth", "tempo"],
+  { id: "based-vip", name: "Based Bot VIP", categories: ["trade"], chains: ["sol", "eth", "base", "bsc", "arb", "avax", "abstract", "hyperevm", "ink", "story", "xlayer", "plasma", "unichain", "monad", "megaeth", "tempo"],
     buildUrl: (c, t) => `https://t.me/based_vip_bot?start=r_rtunazzz_b_${t}` },
-  { id: "based-web", name: "Based Bot Web", category: "trade", chains: ["sol", "eth", "base", "bsc", "arb", "avax", "abstract", "hyperevm", "ink", "story", "xlayer", "plasma", "unichain", "monad", "megaeth", "tempo"],
+  { id: "based-web", name: "Based Bot Web", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "arb", "avax", "abstract", "hyperevm", "ink", "story", "xlayer", "plasma", "unichain", "monad", "megaeth", "tempo"],
     buildUrl: (c, t) => `https://basedbot.app/token/${c}/${t}?ref=rtunazzz` },
-  { id: "banana", name: "Banana Gun", category: "trade", chains: ["eth", "base", "bsc"],
+  { id: "banana", name: "Banana Gun", categories: ["trade"], chains: ["eth", "base", "bsc"],
     buildUrl: (c, t) => `https://t.me/BananaGunSniper_bot?start=snp_rtunazzz_${t}` },
-  { id: "bloom-evm", name: "Bloom", category: "trade", chains: ["eth", "base", "bsc", "hyperevm"],
+  { id: "bloom-evm", name: "Bloom", categories: ["trade"], chains: ["eth", "base", "bsc", "hyperevm"],
     buildUrl: (c, t) => `https://t.me/BloomEVMbot?start=ref_tuna_ca_${t}` },
-  { id: "fomo", name: "FOMO", category: "trade", chains: ["sol", "eth", "base", "bsc"],
+  { id: "fomo", name: "FOMO", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc"],
     resolveChain: resolveChainId,
     buildUrl: (c, t, s) => `https://fomo.family/coin?address=${t}&chainId=${s}` },
-  { id: "azura", name: "Azura", category: "trade", chains: ["sol", "eth", "base", "bsc"],
+  { id: "azura", name: "Azura", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc"],
     resolveChain: resolveChainId,
     buildUrl: (c, t, s) => `https://app.azura.xyz/spot/${s}/${t}` },
-  { id: "photon-tron", name: "Photon", category: "trade", chains: ["tron"],
+  { id: "photon-tron", name: "Photon", categories: ["trade", "chart"], chains: ["tron"],
     buildUrl: (c, t) => `https://photon-tron.tinyastro.io/en/r/@rtunazzz/${t}` },
-  { id: "maestro", name: "Maestro", category: "trade", chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "tron", "ton", "monad"],
+  { id: "maestro", name: "Maestro", categories: ["trade"], chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "tron", "ton", "monad"],
     buildUrl: (c, t) => `https://t.me/MaestroSniperBot?start=${t}-rtunazzz` },
-  { id: "padre", name: "Padre", category: "trade", chains: ["sol", "bsc"],
+  { id: "padre", name: "Padre", categories: ["trade", "chart"], chains: ["sol", "bsc"],
     resolveChain: (c) => resolveSlug(null, c),
     buildUrl: (c, t, s) => `https://trade.padre.gg/trade/${s}/${t}?rk=tuna` },
-  { id: "shuriken", name: "Shuriken", category: "trade", chains: ["sui", "tron", "eth", "base", "bsc", "arb", "avax", "ftm"],
+  { id: "shuriken", name: "Shuriken", categories: ["trade"], chains: ["sui", "tron", "eth", "base", "bsc", "arb", "avax", "ftm"],
     buildUrl: (c, t) => `https://t.me/ShurikenTradeBot?start=${t}` },
-  { id: "solscan", name: "Solscan", category: "explore", chains: ["sol"],
+  { id: "solscan", name: "Solscan", categories: ["explore"], chains: ["sol"],
     buildUrl: (c, t) => `https://solscan.io/token/${t}` },
-  { id: "etherscan", name: "Etherscan", category: "explore", chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "ftm", "blast", "mantle", "sonic", "worldchain", "apechain", "unichain", "monad", "abstract", "hyperevm", "plasma", "megaeth", "berachain"],
+  { id: "etherscan", name: "Etherscan", categories: ["explore"], chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "ftm", "blast", "mantle", "sonic", "worldchain", "apechain", "unichain", "monad", "abstract", "hyperevm", "plasma", "megaeth", "berachain"],
     buildUrl: (c, t) => {
       const d = { eth: "etherscan.io", base: "basescan.org", bsc: "bscscan.com", arb: "arbiscan.io", op: "optimistic.etherscan.io", matic: "polygonscan.com", avax: "snowscan.xyz", ftm: "ftmscan.com", blast: "blastscan.io", mantle: "mantlescan.xyz", sonic: "sonicscan.org", worldchain: "worldscan.org", apechain: "apescan.io", unichain: "uniscan.xyz", monad: "monadscan.com", abstract: "abscan.org", hyperevm: "hyperevmscan.io", plasma: "plasmascan.to", megaeth: "mega.etherscan.io", berachain: "beratrail.io" };
       return `https://${d[c] || "etherscan.io"}/token/${t}`;
     } },
-  { id: "blockscout", name: "Blockscout", category: "explore", chains: ["eth", "base", "arb", "matic", "soneium", "shape", "story", "morph", "ink", "flow", "tempo"],
+  { id: "blockscout", name: "Blockscout", categories: ["explore"], chains: ["eth", "base", "arb", "matic", "soneium", "shape", "story", "morph", "ink", "flow", "tempo"],
     buildUrl: (c, t) => {
       const d = { eth: "eth.blockscout.com", base: "base.blockscout.com", arb: "arbitrum.blockscout.com", matic: "polygon.blockscout.com", soneium: "soneium.blockscout.com", shape: "shapescan.xyz", story: "www.storyscan.io", morph: "explorer.morph.network", ink: "explorer.inkonchain.com", flow: "evm.flowscan.io", tempo: "explore.tempo.xyz" };
       return `https://${d[c] || "explorer.blockscout.com"}/address/${t}`;
     } },
-  { id: "suiscan", name: "Suiscan", category: "explore", chains: ["sui"],
+  { id: "suiscan", name: "Suiscan", categories: ["explore"], chains: ["sui"],
     buildUrl: (c, t) => `https://suiscan.xyz/mainnet/coin/${t}` },
-  { id: "tronscan", name: "Tronscan", category: "explore", chains: ["tron"],
+  { id: "tronscan", name: "Tronscan", categories: ["explore"], chains: ["tron"],
     buildUrl: (c, t) => `https://tronscan.org/#/token20/${t}` },
-  { id: "mempool", name: "Mempool", category: "explore", chains: ["btc"],
+  { id: "mempool", name: "Mempool", categories: ["explore"], chains: ["btc"],
     buildUrl: (c, t) => `https://mempool.space/address/${t}` },
-  { id: "oklink", name: "OKLink", category: "explore", chains: ["xlayer"],
+  { id: "oklink", name: "OKLink", categories: ["explore"], chains: ["xlayer"],
     buildUrl: (c, t) => `https://www.oklink.com/x-layer/token/${t}` },
-  { id: "dexscreener", name: "DexScreener", category: "chart", chains: ["sol", "sui", "tron", "ton", ...ALL_EVM], params: ["maker"],
+  { id: "dexscreener", name: "DexScreener", categories: ["chart"], chains: ["sol", "sui", "tron", "ton", ...ALL_EVM], params: ["maker"],
     resolveChain: (c) => resolveSlug(null, c),
     buildUrl: (c, t, s) => `https://dexscreener.com/${s}/${t}` },
-  { id: "geckoterminal", name: "GeckoTerminal", category: "chart", chains: ["sol", "sui", "tron", "ton", ...ALL_EVM],
+  { id: "geckoterminal", name: "GeckoTerminal", categories: ["chart"], chains: ["sol", "sui", "tron", "ton", ...ALL_EVM],
     resolveChain: (c) => resolveSlug({ eth: "eth", sui: "sui-network", matic: "polygon_pos", avax: "avax", ftm: "ftm" }, c),
     buildUrl: (c, t, s) => `https://www.geckoterminal.com/${s}/pools/${t}` },
-  { id: "dextools", name: "DEXTools", category: "chart", chains: ["sol", "sui", "tron", "ton", ...ALL_EVM], params: ["maker"],
+  { id: "dextools", name: "DEXTools", categories: ["chart"], chains: ["sol", "sui", "tron", "ton", ...ALL_EVM], params: ["maker"],
     resolveChain: (c) => resolveSlug({ eth: "ether", bsc: "bnb" }, c),
     buildUrl: (c, t, s) => `https://www.dextools.io/app/en/${s}/pair-explorer/${t}` },
-  { id: "birdeye", name: "Birdeye", category: "chart", chains: ["sol", "eth", "base", "bsc", "arb", "op", "avax", "sui"],
+  { id: "birdeye", name: "Birdeye", categories: ["chart"], chains: ["sol", "eth", "base", "bsc", "arb", "op", "avax", "sui"],
     resolveChain: (c) => resolveSlug(null, c),
     buildUrl: (c, t, s) => `https://birdeye.so/token/${t}?chain=${s}` },
-  { id: "defined", name: "Defined", category: "chart", chains: ["sol", "sui", "tron", ...ALL_EVM], params: ["quoteToken", "preferredQuoteTokenAddress", "maker"],
+  { id: "defined", name: "Defined", categories: ["chart"], chains: ["sol", "sui", "tron", ...ALL_EVM], params: ["quoteToken", "preferredQuoteTokenAddress", "maker"],
     buildUrl: (c, t) => `https://www.defined.fi/${c}/${t}` },
 ];
 
@@ -181,13 +181,42 @@ function buildRedirectUrl(platform, chain, token, searchParams) {
   return dest;
 }
 
-function resolve(prefs, chain, action) {
-  const override = prefs.overrides?.[chain]?.[action];
-  if (override) return override;
+const SAME_AS_TRADE = "@trade";
+
+function isValidFor(id, chain) {
+  return typeof id === "string" && Object.hasOwn(PLATFORM_MAP, id) && PLATFORM_MAP[id].chains.includes(chain);
+}
+
+function resolveDirect(prefs, chain, action) {
   const eco = CHAINS[chain]?.ecosystem;
   if (!eco) return null;
+
+  const override = prefs.overrides?.[chain]?.[action];
+  if (isValidFor(override, chain)) return override;
+
   const ecoDefault = prefs[eco]?.[action];
-  if (ecoDefault && PLATFORM_MAP[ecoDefault]?.chains.includes(chain)) return ecoDefault;
-  const first = PLATFORMS.find((p) => p.category === action && p.chains.includes(chain));
+  if (isValidFor(ecoDefault, chain)) return ecoDefault;
+
+  const first = PLATFORMS.find((p) => p.categories.includes(action) && p.chains.includes(chain));
   return first?.id ?? null;
+}
+
+function resolve(prefs, chain, action) {
+  if (action === "chart") {
+    const eco = CHAINS[chain]?.ecosystem;
+    const override = prefs.overrides?.[chain]?.chart;
+    const ecoDefault = eco ? prefs[eco]?.chart : null;
+
+    const overrideValid = isValidFor(override, chain);
+    const useSentinel =
+      override === SAME_AS_TRADE ||
+      (!overrideValid && ecoDefault === SAME_AS_TRADE);
+
+    if (useSentinel) {
+      const traded = resolveDirect(prefs, chain, "trade");
+      if (traded) return traded;
+    }
+  }
+
+  return resolveDirect(prefs, chain, action);
 }
