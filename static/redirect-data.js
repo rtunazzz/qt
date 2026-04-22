@@ -142,6 +142,8 @@ const PLATFORMS = [
     buildUrl: (c, t, s) => `https://birdeye.so/token/${t}?chain=${s}` },
   { id: "defined", name: "Defined", categories: ["chart"], chains: ["sol", "sui", "tron", ...ALL_EVM], params: ["quoteToken", "preferredQuoteTokenAddress", "maker"],
     buildUrl: (c, t) => `https://www.defined.fi/${c}/${t}` },
+  { id: "redefined", name: "ReDefined", categories: ["chart"], chains: ["sol", "sui", "tron", ...ALL_EVM], params: ["quoteToken", "preferredQuoteTokenAddress", "maker"],
+    buildUrl: (c, t) => `https://re.defined.fi/token/${c}/${t}?ref=16VUY` },
 ];
 
 const PLATFORM_MAP = Object.fromEntries(PLATFORMS.map((p) => [p.id, p]));
