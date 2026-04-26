@@ -20,11 +20,8 @@ export default {
     const platformId = resolve(prefs, route.chain, route.action);
     if (!platformId) return env.ASSETS.fetch(request);
 
-    const platform = PLATFORM_MAP[platformId];
-    if (!platform) return env.ASSETS.fetch(request);
-
     try {
-      const dest = buildRedirectUrl(platform, route.chain, route.token, url.searchParams);
+      const dest = buildRedirectUrl(platformId, route.chain, route.token, url.searchParams);
       return new Response(null, {
         status: 302,
         headers: {

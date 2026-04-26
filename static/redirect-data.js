@@ -79,14 +79,24 @@ const PLATFORMS = [
     buildUrl: (c, t) => `https://photon-base.tinyastro.io/en/r/@rtunazzz/${t}` },
   { id: "gmgn", name: "GMGN", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "tron", "monad"],
     buildUrl: (c, t) => `https://gmgn.ai/${c}/token/rtuna_${t}` },
-  { id: "sigma-vip", name: "Sigma VIP", categories: ["trade"], chains: ["eth", "base", "bsc"],
-    buildUrl: (c, t) => `https://t.me/SigmaTradingVIP_bot?start=x1865619192-${t}-${c}` },
   { id: "sigma", name: "Sigma", categories: ["trade"], chains: ["eth", "base", "bsc"],
-    buildUrl: (c, t) => `https://t.me/Sigma_buyBot?start=x1865619192-${t}-${c}` },
+    variants: [
+      { id: "default", name: "Standard", bot: "Sigma_buyBot" },
+      { id: "sell", name: "Sell", bot: "Sigma_SellBot" },
+      { id: "vip", name: "VIP", bot: "SigmaTradingVIP_bot" },
+      ...Array.from({ length: 9 }, (_, i) => ({ id: `t${i + 3}`, name: `Server ${i + 3}`, bot: `SigmaTrading${i + 3}_bot` })),
+    ],
+    buildUrl: (c, t, _, v) => `https://t.me/${v.bot}?start=x1865619192-${t}-${c}` },
   { id: "based", name: "Based Bot", categories: ["trade"], chains: ["sol", "eth", "base", "bsc", "arb", "avax", "abstract", "hyperevm", "ink", "story", "xlayer", "plasma", "unichain", "monad", "megaeth", "tempo"],
-    buildUrl: (c, t) => `https://t.me/based_eth_bot?start=r_rtunazzz_b_${t}` },
-  { id: "based-vip", name: "Based Bot VIP", categories: ["trade"], chains: ["sol", "eth", "base", "bsc", "arb", "avax", "abstract", "hyperevm", "ink", "story", "xlayer", "plasma", "unichain", "monad", "megaeth", "tempo"],
-    buildUrl: (c, t) => `https://t.me/based_vip_bot?start=r_rtunazzz_b_${t}` },
+    variants: [
+      { id: "default", name: "Standard", bot: "based_eth_bot" },
+      ...Array.from({ length: 4 }, (_, i) => ({ id: `based${i + 2}`, name: `Server ${i + 2}`, bot: `based${i + 2}_eth_bot` })),
+      { id: "vip-us-west", name: "VIP (US West)", bot: "based_vip_bot" },
+      { id: "vip-eu", name: "VIP (EU)", bot: "based_vip_eu_bot" },
+      { id: "vip-us-east", name: "VIP (US East)", bot: "based_vip_us_bot" },
+      { id: "exclusive", name: "Exclusive", bot: "based_exclusive_bot" },
+    ],
+    buildUrl: (c, t, _, v) => `https://t.me/${v.bot}?start=r_rtunazzz_b_${t}` },
   { id: "based-web", name: "Based Bot Web", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "arb", "avax", "abstract", "hyperevm", "ink", "story", "xlayer", "plasma", "unichain", "monad", "megaeth", "tempo"],
     buildUrl: (c, t) => `https://basedbot.app/token/${c}/${t}?ref=rtunazzz` },
   { id: "banana", name: "Banana Gun", categories: ["trade"], chains: ["eth", "base", "bsc"],
@@ -170,9 +180,30 @@ function parseRoute(pathname) {
   return { chain, token, action };
 }
 
-function buildRedirectUrl(platform, chain, token, searchParams) {
+const DEFAULT_VARIANT = "default";
+
+function parsePlatformId(id) {
+  if (typeof id !== "string" || !id) return null;
+  const idx = id.indexOf(":");
+  if (idx === -1) return { base: id, variant: null };
+  return { base: id.slice(0, idx), variant: id.slice(idx + 1) || null };
+}
+
+function resolveVariant(platform, variantId) {
+  if (!platform.variants?.length) return undefined;
+  const target = variantId || DEFAULT_VARIANT;
+  return platform.variants.find((v) => v.id === target)
+    || platform.variants.find((v) => v.id === DEFAULT_VARIANT)
+    || platform.variants[0];
+}
+
+function buildRedirectUrl(platformId, chain, token, searchParams) {
+  const parsed = parsePlatformId(platformId);
+  const platform = parsed && PLATFORM_MAP[parsed.base];
+  if (!platform) throw new Error(`Unknown platform "${platformId}"`);
+  const variant = resolveVariant(platform, parsed.variant);
   const s = platform.resolveChain ? platform.resolveChain(chain) : chain;
-  let dest = platform.buildUrl(chain, token, s);
+  let dest = platform.buildUrl(chain, token, s, variant);
   if (platform.params?.length && platform.params.some((k) => searchParams.has(k))) {
     const target = new URL(dest);
     for (const key of platform.params) {
@@ -186,7 +217,12 @@ function buildRedirectUrl(platform, chain, token, searchParams) {
 const SAME_AS_TRADE = "@trade";
 
 function isValidFor(id, chain) {
-  return typeof id === "string" && Object.hasOwn(PLATFORM_MAP, id) && PLATFORM_MAP[id].chains.includes(chain);
+  const parsed = parsePlatformId(id);
+  if (!parsed) return false;
+  const platform = PLATFORM_MAP[parsed.base];
+  if (!platform || !platform.chains.includes(chain)) return false;
+  if (parsed.variant && !platform.variants?.some((v) => v.id === parsed.variant)) return false;
+  return true;
 }
 
 function resolveDirect(prefs, chain, action) {

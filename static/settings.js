@@ -87,6 +87,71 @@ function initExport() {
   });
 }
 
+function composeId(base, variantId) {
+  if (!base || base === SAME_AS_TRADE) return base;
+  const platform = PLATFORM_MAP[base];
+  if (!platform?.variants?.length) return base;
+  if (!variantId || variantId === DEFAULT_VARIANT) return base;
+  return `${base}:${variantId}`;
+}
+
+function fillVariantOptions(vsel, variants) {
+  vsel.innerHTML = "";
+  for (const v of variants) {
+    const opt = document.createElement("option");
+    opt.value = v.id;
+    opt.textContent = v.name;
+    vsel.appendChild(opt);
+  }
+}
+
+function variantFieldFor(select) {
+  const next = select.closest(".field")?.nextElementSibling;
+  return next?.classList?.contains("variant-field") ? next : null;
+}
+
+function syncVariantWrap(select, currentVariantId) {
+  const parsed = parsePlatformId(select.value);
+  const platform = parsed && PLATFORM_MAP[parsed.base];
+  const variants = platform?.variants;
+  let field = variantFieldFor(select);
+
+  if (!variants?.length) {
+    if (field) field.hidden = true;
+    return;
+  }
+
+  if (!field) {
+    field = document.createElement("div");
+    field.className = "field variant-field";
+    const label = document.createElement("label");
+    label.textContent = "Instance";
+    const wrap = document.createElement("div");
+    wrap.className = "select-wrap variant-wrap";
+    const vsel = document.createElement("select");
+    wrap.appendChild(vsel);
+    field.appendChild(label);
+    field.appendChild(wrap);
+    select.closest(".field").after(field);
+    vsel.addEventListener("change", saveCurrentPrefs);
+  }
+
+  field.hidden = false;
+  const vsel = field.querySelector("select");
+  fillVariantOptions(vsel, variants);
+  vsel.value = variants.some((v) => v.id === currentVariantId)
+    ? currentVariantId
+    : (variants.find((v) => v.id === DEFAULT_VARIANT)?.id ?? variants[0].id);
+}
+
+function readSelectValue(select) {
+  const field = variantFieldFor(select);
+  if (field && !field.hidden) {
+    return composeId(select.value, field.querySelector("select").value);
+  }
+  return select.value;
+}
+
 function saveCurrentPrefs() {
   const form = document.getElementById("settings-form");
   const prefs = {
@@ -98,7 +163,8 @@ function saveCurrentPrefs() {
   for (const eco of ["sol", "evm"]) {
     for (const action of ACTIONS) {
       const select = form.querySelector(`#${eco}-${action}`);
-      if (select?.value) prefs[eco][action] = select.value;
+      if (!select?.value) continue;
+      prefs[eco][action] = readSelectValue(select);
     }
   }
 
@@ -136,9 +202,15 @@ function renderEcosystemDefaults(form, prefs) {
       }
 
       const stored = prefs[eco]?.[action];
+      const parsed = parsePlatformId(stored);
       const firstReal = [...select.options].find((o) => o.value && o.value !== SAME_AS_TRADE);
-      select.value = stored || firstReal?.value || select.options[0]?.value || "";
-      select.addEventListener("change", saveCurrentPrefs);
+      const baseExists = parsed && [...select.options].some((o) => o.value === parsed.base);
+      select.value = (baseExists ? parsed.base : firstReal?.value) || select.options[0]?.value || "";
+      syncVariantWrap(select, parsed?.variant);
+      select.addEventListener("change", () => {
+        syncVariantWrap(select);
+        saveCurrentPrefs();
+      });
 
       if (action === "chart") {
         const hint = document.querySelector(`.hint-field[data-hint-for="${eco}-chart"]`);
@@ -171,12 +243,17 @@ function renderOverrides() {
     if (!chain) continue;
     for (const [action, platformId] of Object.entries(actions)) {
       if (action === "chart" && platformId === SAME_AS_TRADE) {
-        items.push({ chainId, chain, action, platform: { name: "Same as Trading" } });
+        items.push({ chainId, chain, action, platformName: "Same as Trading" });
         continue;
       }
-      const platform = PLATFORM_MAP[platformId];
+      const parsed = parsePlatformId(platformId);
+      const platform = parsed && PLATFORM_MAP[parsed.base];
       if (!platform) continue;
-      items.push({ chainId, chain, action, platform });
+      const variant = resolveVariant(platform, parsed.variant);
+      const platformName = variant && parsed.variant
+        ? `${platform.name} \u00b7 ${variant.name}`
+        : platform.name;
+      items.push({ chainId, chain, action, platformName });
     }
   }
 
@@ -185,13 +262,13 @@ function renderOverrides() {
     return;
   }
 
-  list.innerHTML = items.map(({ chainId, chain, action, platform }) =>
+  list.innerHTML = items.map(({ chainId, chain, action, platformName }) =>
     `<div class="override-item">
       <div class="override-info">
         <span class="badge sm ${chain.ecosystem}">${chain.name}</span>
         <span class="override-action">${action}</span>
         <span class="override-arrow">\u2192</span>
-        <span class="override-platform">${platform.name}</span>
+        <span class="override-platform">${platformName}</span>
       </div>
       <button type="button" class="remove-btn" data-chain="${chainId}" data-action="${action}">\u00d7</button>
     </div>`
@@ -218,13 +295,21 @@ function initAddOverride() {
   const chainSelect = document.getElementById("add-chain");
   const actionSelect = document.getElementById("add-action");
   const platformSelect = document.getElementById("add-platform");
+  const variantWrap = document.getElementById("add-variant-wrap");
+  const variantSelect = document.getElementById("add-variant");
   const addBtn = document.getElementById("add-btn");
+
+  const hideVariant = () => {
+    variantWrap.hidden = true;
+    variantSelect.innerHTML = "";
+  };
 
   setSelectOptions(chainSelect, "Chain...",
     Object.entries(CHAINS).map(([id, c]) => [id, c.name]));
 
   chainSelect.addEventListener("change", () => {
     setSelectOptions(platformSelect, "Platform...");
+    hideVariant();
     addBtn.disabled = true;
 
     if (!chainSelect.value) {
@@ -239,6 +324,7 @@ function initAddOverride() {
 
   actionSelect.addEventListener("change", () => {
     addBtn.disabled = true;
+    hideVariant();
 
     if (!actionSelect.value) {
       setSelectOptions(platformSelect, "Platform...");
@@ -257,6 +343,14 @@ function initAddOverride() {
     const hasValue = !!platformSelect.value;
     addBtn.disabled = !hasValue;
     addBtn.classList.toggle("pending", hasValue);
+
+    const platform = PLATFORM_MAP[platformSelect.value];
+    if (platform?.variants?.length) {
+      fillVariantOptions(variantSelect, platform.variants);
+      variantWrap.hidden = false;
+    } else {
+      hideVariant();
+    }
   });
 
   addBtn.addEventListener("click", () => {
@@ -265,13 +359,16 @@ function initAddOverride() {
     const platform = platformSelect.value;
     if (!chain || !action || !platform) return;
 
+    const value = variantWrap.hidden ? platform : composeId(platform, variantSelect.value);
+
     if (!currentPrefs.overrides) currentPrefs.overrides = {};
     if (!currentPrefs.overrides[chain]) currentPrefs.overrides[chain] = {};
-    currentPrefs.overrides[chain][action] = platform;
+    currentPrefs.overrides[chain][action] = value;
 
     chainSelect.value = "";
     setSelectOptions(actionSelect, "Action...");
     setSelectOptions(platformSelect, "Platform...");
+    hideVariant();
     addBtn.disabled = true;
     addBtn.classList.remove("pending");
 

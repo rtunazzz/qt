@@ -178,6 +178,14 @@ body {
   margin-bottom: 0.4rem;
 }
 
+.variant-field label {
+  color: var(--text-dim);
+}
+
+.variant-field[hidden] {
+  display: none;
+}
+
 .field:last-child, .override-row:last-child {
   margin-bottom: 0;
 }

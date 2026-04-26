@@ -23,10 +23,7 @@ self.addEventListener("fetch", (e) => {
       const platformId = resolve(prefs, route.chain, route.action);
       if (!platformId) return fetch(e.request);
 
-      const platform = PLATFORM_MAP[platformId];
-      if (!platform) return fetch(e.request);
-
-      return Response.redirect(buildRedirectUrl(platform, route.chain, route.token, url.searchParams), 302);
+      return Response.redirect(buildRedirectUrl(platformId, route.chain, route.token, url.searchParams), 302);
     }).catch((err) => {
       console.warn("[qt sw] redirect failed, falling through to edge:", err.message);
       return fetch(e.request);
