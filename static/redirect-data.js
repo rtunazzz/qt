@@ -100,7 +100,17 @@ const PLATFORMS = [
   { id: "based-web", name: "Based Bot Web", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "arb", "avax", "abstract", "hyperevm", "ink", "story", "xlayer", "plasma", "unichain", "monad", "megaeth", "tempo"],
     buildUrl: (c, t) => `https://basedbot.app/r/rtunazzz/token/${c}/${t}` },
   { id: "banana", name: "Banana Gun", categories: ["trade"], chains: ["eth", "base", "bsc"],
-    buildUrl: (c, t) => `https://t.me/BananaGun_bot?start=snp_rtunazzz_${t}` },
+    variants: [
+      { id: "default", name: "Standard", bot: "BananaGun_bot" },
+      ...Array.from({ length: 19 }, (_, i) => ({ id: `t${i + 2}`, name: `Server ${i + 2}`, bot: `BananaGun${i + 2}_bot` })),
+    ],
+    buildUrl: (c, t, _, v) => `https://t.me/${v.bot}?start=snp_rtunazzz_${t}` },
+  { id: "banana-old", name: "Banana Gun Old", categories: ["trade"], chains: ["eth", "base", "bsc"],
+    variants: [
+      { id: "default", name: "Standard", bot: "BananaGunSniper_bot" },
+      ...Array.from({ length: 16 }, (_, i) => ({ id: `t${i + 2}`, name: `Server ${i + 2}`, bot: `BananaGunSniper${i + 2}_bot` })),
+    ],
+    buildUrl: (c, t, _, v) => `https://t.me/${v.bot}?start=snp_rtunazzz_${t}` },
   { id: "bloom-evm", name: "Bloom", categories: ["trade"], chains: ["eth", "base", "bsc", "hyperevm"],
     buildUrl: (c, t) => `https://t.me/BloomEVMbot?start=ref_tuna_ca_${t}` },
   { id: "fomo", name: "FOMO", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc"],
