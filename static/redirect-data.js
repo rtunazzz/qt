@@ -98,7 +98,9 @@ const PLATFORMS = [
     ],
     buildUrl: (c, t, _, v) => `https://t.me/${v.bot}?start=r_rtunazzz_b_${t}` },
   { id: "based-web", name: "Based Bot Web", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "arb", "avax", "abstract", "hyperevm", "ink", "story", "xlayer", "plasma", "unichain", "monad", "megaeth", "tempo"],
-    buildUrl: (c, t) => `https://basedbot.app/r/rtunazzz/token/${c}/${t}` },
+    buildUrl: (c, t) => c === "hyperevm"
+      ? `https://basedbot.app/token/hype/${t}`
+      : `https://basedbot.app/r/rtunazzz/token/${c}/${t}` },
   { id: "banana", name: "Banana Gun", categories: ["trade"], chains: ["eth", "base", "bsc"],
     variants: [
       { id: "default", name: "Standard", bot: "BananaGun_bot" },
