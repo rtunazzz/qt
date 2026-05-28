@@ -84,6 +84,7 @@ const PLATFORMS = [
       { id: "default", name: "Standard", bot: "Sigma_buyBot" },
       { id: "sell", name: "Sell", bot: "Sigma_SellBot" },
       { id: "vip", name: "VIP", bot: "SigmaTradingVIP_bot" },
+      { id: "ambassador", name: "Ambassador", bot: "sigma_ambassador_bot" },
       ...Array.from({ length: 9 }, (_, i) => ({ id: `t${i + 3}`, name: `Server ${i + 3}`, bot: `SigmaTrading${i + 3}_bot` })),
     ],
     buildUrl: (c, t, _, v) => `https://t.me/${v.bot}?start=x1865619192-${t}-${c}` },
