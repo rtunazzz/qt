@@ -349,7 +349,63 @@ code {
   flex: 1;
 }
 
+.add-custom-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.text-input {
+  flex: 1;
+  min-width: 0;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 0.45rem 0.6rem;
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  transition: border-color 0.15s;
+}
+
+.text-input.custom-name-input {
+  flex: 0 0 8rem;
+}
+
+.text-input:hover {
+  border-color: var(--border-hover);
+}
+
+.text-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent-dim);
+}
+
+.text-input::placeholder {
+  color: var(--text-dim);
+}
+
+.custom-info {
+  flex: 1;
+  gap: 0.6rem;
+}
+
+.custom-url {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
 @media (max-width: 600px) {
+  .add-custom-row {
+    flex-wrap: wrap;
+  }
+
+  .text-input.custom-name-input {
+    flex: 1 1 100%;
+  }
+
   .container {
     padding: 1.5rem 1rem 1.5rem;
   }

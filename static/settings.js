@@ -7,6 +7,8 @@ function initSettings() {
   const form = document.getElementById("settings-form");
 
   renderEcosystemDefaults(form, currentPrefs);
+  renderCustom();
+  initAddCustom();
   renderOverrides();
   initAddOverride();
   initExport();
@@ -159,6 +161,7 @@ function saveCurrentPrefs() {
     evm: {},
     overrides: currentPrefs.overrides || {},
   };
+  if (customLinks().length) prefs.custom = currentPrefs.custom;
 
   for (const eco of ["sol", "evm"]) {
     for (const action of ACTIONS) {
@@ -170,6 +173,43 @@ function saveCurrentPrefs() {
 
   writePrefs(prefs);
   currentPrefs = prefs;
+}
+
+function customLinks() {
+  return Array.isArray(currentPrefs.custom) ? currentPrefs.custom : [];
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (ch) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+}
+
+function appendCustomOptions(select) {
+  const links = customLinks();
+  if (!links.length) return;
+  const group = document.createElement("optgroup");
+  group.label = "Custom";
+  for (const e of links) {
+    const opt = document.createElement("option");
+    opt.value = e.id;
+    opt.textContent = e.name;
+    group.appendChild(opt);
+  }
+  select.appendChild(group);
+}
+
+function refreshCustomOptions() {
+  const form = document.getElementById("settings-form");
+  for (const eco of ["sol", "evm"]) {
+    for (const action of ACTIONS) {
+      const select = form.querySelector(`#${eco}-${action}`);
+      if (!select) continue;
+      const prev = select.value;
+      select.querySelector('optgroup[label="Custom"]')?.remove();
+      appendCustomOptions(select);
+      if ([...select.options].some((o) => o.value === prev)) select.value = prev;
+    }
+  }
 }
 
 function renderEcosystemDefaults(form, prefs) {
@@ -200,6 +240,7 @@ function renderEcosystemDefaults(form, prefs) {
         opt.textContent = p.name;
         select.appendChild(opt);
       }
+      appendCustomOptions(select);
 
       const stored = prefs[eco]?.[action];
       const parsed = parsePlatformId(stored);
@@ -247,6 +288,11 @@ function renderOverrides() {
         continue;
       }
       const parsed = parsePlatformId(platformId);
+      const custom = parsed && customLinks().find((e) => e.id === parsed.base);
+      if (custom) {
+        items.push({ chainId, chain, action, platformName: escapeHtml(custom.name) });
+        continue;
+      }
       const platform = parsed && PLATFORM_MAP[parsed.base];
       if (!platform) continue;
       const variant = resolveVariant(platform, parsed.variant);
@@ -318,7 +364,7 @@ function initAddOverride() {
     }
 
     setSelectOptions(actionSelect, "Action...",
-      ACTIONS.filter((a) => getPlatformsForChain(chainSelect.value, a).length)
+      ACTIONS.filter((a) => getPlatformsForChain(chainSelect.value, a).length || customLinks().length)
         .map((a) => [a, a.charAt(0).toUpperCase() + a.slice(1)]));
   });
 
@@ -337,6 +383,7 @@ function initAddOverride() {
       options.unshift([SAME_AS_TRADE, "Same as Trading"]);
     }
     setSelectOptions(platformSelect, "Platform...", options);
+    appendCustomOptions(platformSelect);
   });
 
   platformSelect.addEventListener("change", () => {
@@ -374,6 +421,90 @@ function initAddOverride() {
 
     saveCurrentPrefs();
     renderOverrides();
+  });
+}
+
+function genCustomId() {
+  return `custom-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+}
+
+function isValidTemplate(url) {
+  return /^https?:\/\/.+/.test(url);
+}
+
+function renderCustom() {
+  const list = document.getElementById("custom-list");
+  const links = customLinks();
+
+  if (!links.length) {
+    list.innerHTML = '<div class="override-empty">No custom links defined</div>';
+    return;
+  }
+
+  list.innerHTML = links.map((e) =>
+    `<div class="override-item">
+      <div class="override-info custom-info">
+        <span class="override-platform">${escapeHtml(e.name)}</span>
+        <code class="custom-url">${escapeHtml(e.url)}</code>
+      </div>
+      <button type="button" class="remove-btn" data-custom-id="${escapeHtml(e.id)}">×</button>
+    </div>`
+  ).join("");
+
+  list.querySelectorAll(".remove-btn").forEach((btn) => {
+    btn.addEventListener("click", () => removeCustom(btn.dataset.customId));
+  });
+}
+
+function purgeCustomFromOverrides(id) {
+  const overrides = currentPrefs.overrides || {};
+  for (const chainId of Object.keys(overrides)) {
+    for (const action of Object.keys(overrides[chainId])) {
+      if (overrides[chainId][action] === id) delete overrides[chainId][action];
+    }
+    if (!Object.keys(overrides[chainId]).length) delete overrides[chainId];
+  }
+}
+
+function removeCustom(id) {
+  currentPrefs.custom = customLinks().filter((e) => e.id !== id);
+  purgeCustomFromOverrides(id);
+  refreshCustomOptions();
+  saveCurrentPrefs();
+  renderCustom();
+  renderOverrides();
+}
+
+function initAddCustom() {
+  const nameInput = document.getElementById("custom-name");
+  const urlInput = document.getElementById("custom-url");
+  const btn = document.getElementById("custom-add-btn");
+
+  const sync = () => {
+    const ok = nameInput.value.trim() && isValidTemplate(urlInput.value.trim());
+    btn.disabled = !ok;
+    btn.classList.toggle("pending", !!ok);
+  };
+
+  nameInput.addEventListener("input", sync);
+  urlInput.addEventListener("input", sync);
+
+  btn.addEventListener("click", () => {
+    const name = nameInput.value.trim();
+    const url = urlInput.value.trim();
+    if (!name || !isValidTemplate(url)) return;
+
+    if (!Array.isArray(currentPrefs.custom)) currentPrefs.custom = [];
+    currentPrefs.custom.push({ id: genCustomId(), name, url });
+
+    nameInput.value = "";
+    urlInput.value = "";
+    btn.disabled = true;
+    btn.classList.remove("pending");
+
+    saveCurrentPrefs();
+    renderCustom();
+    refreshCustomOptions();
   });
 }
 

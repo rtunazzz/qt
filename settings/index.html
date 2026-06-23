@@ -95,6 +95,24 @@
 
       <section class="card card-accent" style="--i:3">
         <div class="card-header">
+          <h2>Custom Links</h2>
+          <span class="badge">templates</span>
+        </div>
+        <p class="hint">Define your own link templates. Use <code>{token}</code>, <code>{chain}</code>, <code>{chainId}</code>, <code>{slug}</code>, or any query param (e.g. <code>{maker}</code>). Selectable as a default or per-chain override.</p>
+
+        <div id="custom-list"></div>
+
+        <div class="add-override" id="add-custom">
+          <div class="add-custom-row">
+            <input type="text" id="custom-name" class="text-input custom-name-input" placeholder="Name" maxlength="40">
+            <input type="text" id="custom-url" class="text-input" placeholder="https://t.me/MyBot?start={token}">
+            <button type="button" class="add-btn" id="custom-add-btn" disabled>+</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card card-accent" style="--i:4">
+        <div class="card-header">
           <h2>Overrides</h2>
           <span class="badge">per-chain</span>
         </div>
@@ -129,11 +147,11 @@
 
     </form>
 
-    <div class="export-row" style="--i:4">
+    <div class="export-row" style="--i:5">
       <button type="button" class="export-btn" id="export-btn">Export</button>
     </div>
 
-    <footer class="footer" style="--i:5">
+    <footer class="footer" style="--i:6">
       <div class="footer-routes" id="footer-routes"></div>
     </footer>
   </div>

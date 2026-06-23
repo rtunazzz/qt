@@ -213,13 +213,45 @@ function resolveVariant(platform, variantId) {
     || platform.variants[0];
 }
 
-function buildRedirectUrl(platformId, chain, token, searchParams) {
+function fillTemplate(template, chain, token, searchParams) {
+  const meta = CHAINS[chain] || {};
+  const vars = {
+    token,
+    chain,
+    chainId: meta.chainId != null ? String(meta.chainId) : "",
+    slug: meta.slug || chain,
+  };
+  return template.replace(/\{(\w+)\}/g, (_, key) => {
+    if (key in vars) return vars[key];
+    if (searchParams?.has(key)) return searchParams.get(key);
+    return "";
+  });
+}
+
+function findCustom(customLinks, id) {
+  if (!Array.isArray(customLinks) || !id?.startsWith("custom-")) return null;
+  return customLinks.find((e) => e && e.id === id) ?? null;
+}
+
+function customPlatform(entry) {
+  return {
+    id: entry.id,
+    name: entry.name,
+    categories: ACTIONS,
+    chains: Object.keys(CHAINS),
+    custom: true,
+    buildUrl: (c, t, _s, _v, searchParams) => fillTemplate(entry.url, c, t, searchParams),
+  };
+}
+
+function buildRedirectUrl(platformId, chain, token, searchParams, customLinks) {
   const parsed = parsePlatformId(platformId);
-  const platform = parsed && PLATFORM_MAP[parsed.base];
+  const custom = parsed && findCustom(customLinks, parsed.base);
+  const platform = custom ? customPlatform(custom) : (parsed && PLATFORM_MAP[parsed.base]);
   if (!platform) throw new Error(`Unknown platform "${platformId}"`);
   const variant = resolveVariant(platform, parsed.variant);
   const s = platform.resolveChain ? platform.resolveChain(chain) : chain;
-  let dest = platform.buildUrl(chain, token, s, variant);
+  let dest = platform.buildUrl(chain, token, s, variant, searchParams);
   if (platform.params?.length && platform.params.some((k) => searchParams.has(k))) {
     const target = new URL(dest);
     for (const key of platform.params) {
@@ -232,9 +264,10 @@ function buildRedirectUrl(platformId, chain, token, searchParams) {
 
 const SAME_AS_TRADE = "@trade";
 
-function isValidFor(id, chain) {
+function isValidFor(id, chain, customLinks) {
   const parsed = parsePlatformId(id);
   if (!parsed) return false;
+  if (findCustom(customLinks, parsed.base)) return true;
   const platform = PLATFORM_MAP[parsed.base];
   if (!platform || !platform.chains.includes(chain)) return false;
   if (parsed.variant && !platform.variants?.some((v) => v.id === parsed.variant)) return false;
@@ -245,11 +278,12 @@ function resolveDirect(prefs, chain, action) {
   const eco = CHAINS[chain]?.ecosystem;
   if (!eco) return null;
 
+  const custom = prefs.custom;
   const override = prefs.overrides?.[chain]?.[action];
-  if (isValidFor(override, chain)) return override;
+  if (isValidFor(override, chain, custom)) return override;
 
   const ecoDefault = prefs[eco]?.[action];
-  if (isValidFor(ecoDefault, chain)) return ecoDefault;
+  if (isValidFor(ecoDefault, chain, custom)) return ecoDefault;
 
   const first = PLATFORMS.find((p) => p.categories.includes(action) && p.chains.includes(chain));
   return first?.id ?? null;
@@ -261,7 +295,7 @@ function resolve(prefs, chain, action) {
     const override = prefs.overrides?.[chain]?.chart;
     const ecoDefault = eco ? prefs[eco]?.chart : null;
 
-    const overrideValid = isValidFor(override, chain);
+    const overrideValid = isValidFor(override, chain, prefs.custom);
     const useSentinel =
       override === SAME_AS_TRADE ||
       (!overrideValid && ecoDefault === SAME_AS_TRADE);
