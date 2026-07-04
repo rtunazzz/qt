@@ -141,9 +141,9 @@ const PLATFORMS = [
       const d = { eth: "etherscan.io", base: "basescan.org", bsc: "bscscan.com", arb: "arbiscan.io", op: "optimistic.etherscan.io", matic: "polygonscan.com", avax: "snowscan.xyz", ftm: "ftmscan.com", blast: "blastscan.io", mantle: "mantlescan.xyz", sonic: "sonicscan.org", worldchain: "worldscan.org", apechain: "apescan.io", unichain: "uniscan.xyz", monad: "monadscan.com", abstract: "abscan.org", hyperevm: "hyperevmscan.io", plasma: "plasmascan.to", megaeth: "mega.etherscan.io", berachain: "beratrail.io" };
       return `https://${d[c] || "etherscan.io"}/token/${t}`;
     } },
-  { id: "blockscout", name: "Blockscout", categories: ["explore"], chains: ["eth", "base", "arb", "matic", "soneium", "shape", "story", "morph", "ink", "flow", "tempo", "robinhood"],
+  { id: "blockscout", name: "Blockscout", categories: ["explore"], chains: ["eth", "base", "arb", "matic", "soneium", "shape", "story", "morph", "ink", "flow", "tempo", "robinhood", "arc"],
     buildUrl: (c, t) => {
-      const d = { eth: "eth.blockscout.com", base: "base.blockscout.com", arb: "arbitrum.blockscout.com", matic: "polygon.blockscout.com", soneium: "soneium.blockscout.com", shape: "shapescan.xyz", story: "www.storyscan.io", morph: "explorer.morph.network", ink: "explorer.inkonchain.com", flow: "evm.flowscan.io", tempo: "explore.tempo.xyz", robinhood: "robinhoodchain.blockscout.com" };
+      const d = { eth: "eth.blockscout.com", base: "base.blockscout.com", arb: "arbitrum.blockscout.com", matic: "polygon.blockscout.com", soneium: "soneium.blockscout.com", shape: "shapescan.xyz", story: "www.storyscan.io", morph: "explorer.morph.network", ink: "explorer.inkonchain.com", flow: "evm.flowscan.io", tempo: "explore.tempo.xyz", robinhood: "robinhoodchain.blockscout.com", arc: "arc-mainnet.cloud.blockscout.com" };
       return `https://${d[c] || "explorer.blockscout.com"}/address/${t}`;
     } },
   { id: "suiscan", name: "Suiscan", categories: ["explore"], chains: ["sui"],
