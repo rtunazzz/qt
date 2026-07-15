@@ -1,5 +1,7 @@
 let currentPrefs;
 
+const ACTION_LABELS = { trade: "Trade", trade2: "Trade 2", chart: "Chart", explore: "Explore" };
+
 function initSettings() {
   if (tryImport()) return;
 
@@ -228,7 +230,7 @@ function renderEcosystemDefaults(form, prefs) {
       }
 
       select.innerHTML = "";
-      if (action === "chart") {
+      if (SENTINEL_ACTIONS.has(action)) {
         const opt = document.createElement("option");
         opt.value = SAME_AS_TRADE;
         opt.textContent = "Same as Trading";
@@ -253,8 +255,8 @@ function renderEcosystemDefaults(form, prefs) {
         saveCurrentPrefs();
       });
 
-      if (action === "chart") {
-        const hint = document.querySelector(`.hint-field[data-hint-for="${eco}-chart"]`);
+      if (SENTINEL_ACTIONS.has(action)) {
+        const hint = document.querySelector(`.hint-field[data-hint-for="${eco}-${action}"]`);
         if (hint) {
           const sync = () => { hint.hidden = select.value !== SAME_AS_TRADE; };
           sync();
@@ -283,7 +285,7 @@ function renderOverrides() {
     const chain = CHAINS[chainId];
     if (!chain) continue;
     for (const [action, platformId] of Object.entries(actions)) {
-      if (action === "chart" && platformId === SAME_AS_TRADE) {
+      if (SENTINEL_ACTIONS.has(action) && platformId === SAME_AS_TRADE) {
         items.push({ chainId, chain, action, platformName: "Same as Trading" });
         continue;
       }
@@ -312,7 +314,7 @@ function renderOverrides() {
     `<div class="override-item">
       <div class="override-info">
         <span class="badge sm ${chain.ecosystem}">${chain.name}</span>
-        <span class="override-action">${action}</span>
+        <span class="override-action">${ACTION_LABELS[action] || action}</span>
         <span class="override-arrow">\u2192</span>
         <span class="override-platform">${platformName}</span>
       </div>
@@ -365,7 +367,7 @@ function initAddOverride() {
 
     setSelectOptions(actionSelect, "Action...",
       ACTIONS.filter((a) => getPlatformsForChain(chainSelect.value, a).length || customLinks().length)
-        .map((a) => [a, a.charAt(0).toUpperCase() + a.slice(1)]));
+        .map((a) => [a, ACTION_LABELS[a] || a]));
   });
 
   actionSelect.addEventListener("change", () => {
@@ -379,7 +381,7 @@ function initAddOverride() {
 
     const options = getPlatformsForChain(chainSelect.value, actionSelect.value)
       .map((p) => [p.id, p.name]);
-    if (actionSelect.value === "chart" && getPlatformsForChain(chainSelect.value, "trade").length) {
+    if (SENTINEL_ACTIONS.has(actionSelect.value) && getPlatformsForChain(chainSelect.value, "trade").length) {
       options.unshift([SAME_AS_TRADE, "Same as Trading"]);
     }
     setSelectOptions(platformSelect, "Platform...", options);
@@ -519,6 +521,7 @@ function renderFooter() {
   const routes = [
     { suffix: "", desc: "trade (default)" },
     { suffix: "/trade", desc: "trade" },
+    { suffix: "/trade2", desc: "trade 2" },
     { suffix: "/chart", desc: "chart" },
     { suffix: "/explore", desc: "explore" },
     { suffix: "/tx", desc: "explorer tx" },

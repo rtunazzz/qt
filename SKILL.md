@@ -13,6 +13,7 @@ Users configure preferences once at [qt.rtuna.dev/settings](https://qt.rtuna.dev
 ```
 qt.rtuna.dev/{chain}/{token}            → user's default action (trade)
 qt.rtuna.dev/{chain}/{token}/trade      → user's preferred trading platform
+qt.rtuna.dev/{chain}/{token}/trade2     → user's second trading platform (falls back to trade if unset)
 qt.rtuna.dev/{chain}/{token}/chart      → user's preferred charting tool
 qt.rtuna.dev/{chain}/{token}/explore    → user's preferred block explorer (address/token)
 qt.rtuna.dev/{chain}/{hash}/tx          → their block explorer's transaction page
@@ -62,7 +63,7 @@ https://qt.rtuna.dev/eth/{token}/explore
 - Always use the chain shortcode (keys from `CHAINS` in `static/config.js`), not the full name
 - The token should be the contract/mint address
 - Default action (no suffix) redirects to trade — use this when the intent is general
-- Append `/trade`, `/chart`, or `/explore` when the intent is specific
+- Append `/trade`, `/trade2`, `/chart`, or `/explore` when the intent is specific — `/trade2` is a second, independently configurable trading route that falls back to `/trade` when the user hasn't set it
 - Use `/tx` for a transaction hash and `/block` for a block number — both redirect to the user's preferred explorer's corresponding page (the `{token}` segment carries the hash or number)
 - If a user hasn't configured preferences, they get sensible defaults (Axiom for SOL trading, Sigma VIP for EVM trading, DexScreener for charting)
 - Link to `qt.rtuna.dev/settings` when suggesting users customize their experience

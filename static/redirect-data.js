@@ -56,8 +56,14 @@ function chainsForEcosystem(eco) {
   return Object.entries(CHAINS).filter(([_, c]) => c.ecosystem === eco).map(([id]) => id);
 }
 
+const CATEGORY_ALIAS = { trade2: "trade" };
+
+function categoryFor(action) {
+  return CATEGORY_ALIAS[action] || action;
+}
+
 function getPlatformsForChain(chain, category) {
-  return PLATFORMS.filter((p) => p.categories.includes(category) && p.chains.includes(chain));
+  return PLATFORMS.filter((p) => p.categories.includes(categoryFor(category)) && p.chains.includes(chain));
 }
 
 function getEcosystem(chain) {
@@ -178,15 +184,18 @@ const PLATFORMS = [
 
 const PLATFORM_MAP = Object.fromEntries(PLATFORMS.map((p) => [p.id, p]));
 
-const ACTIONS = ["trade", "chart", "explore"];
+const ACTIONS = ["trade", "trade2", "chart", "explore"];
+
+const SAME_AS_TRADE = "@trade";
+const SENTINEL_ACTIONS = new Set(["trade2", "chart"]);
 
 const EXPLORE_ALIASES = { tx: "explore", block: "explore" };
 const ROUTE_ACTIONS = new Set([...ACTIONS, ...Object.keys(EXPLORE_ALIASES)]);
 const KIND_SEGMENT = { explore: "address", tx: "tx", block: "block" };
 
 const DEFAULT_PREFS = {
-  sol: { trade: "axiom", chart: "dexscreener", explore: "solscan" },
-  evm: { trade: "based", chart: "dexscreener", explore: "etherscan" },
+  sol: { trade: "axiom", trade2: SAME_AS_TRADE, chart: "dexscreener", explore: "solscan" },
+  evm: { trade: "based", trade2: SAME_AS_TRADE, chart: "dexscreener", explore: "etherscan" },
   sui: { explore: "suiscan" },
   tron: { explore: "tronscan" },
   btc: { explore: "mempool" },
@@ -271,8 +280,6 @@ function buildRedirectUrl(platformId, chain, token, searchParams, customLinks, k
   return dest;
 }
 
-const SAME_AS_TRADE = "@trade";
-
 function isValidFor(id, chain, customLinks) {
   const parsed = parsePlatformId(id);
   if (!parsed) return false;
@@ -294,16 +301,16 @@ function resolveDirect(prefs, chain, action) {
   const ecoDefault = prefs[eco]?.[action];
   if (isValidFor(ecoDefault, chain, custom)) return ecoDefault;
 
-  const first = PLATFORMS.find((p) => p.categories.includes(action) && p.chains.includes(chain));
+  const first = PLATFORMS.find((p) => p.categories.includes(categoryFor(action)) && p.chains.includes(chain));
   return first?.id ?? null;
 }
 
 function resolve(prefs, chain, action) {
   action = EXPLORE_ALIASES[action] || action;
-  if (action === "chart") {
+  if (SENTINEL_ACTIONS.has(action)) {
     const eco = CHAINS[chain]?.ecosystem;
-    const override = prefs.overrides?.[chain]?.chart;
-    const ecoDefault = eco ? prefs[eco]?.chart : null;
+    const override = prefs.overrides?.[chain]?.[action];
+    const ecoDefault = eco ? prefs[eco]?.[action] : null;
 
     const overrideValid = isValidFor(override, chain, prefs.custom);
     const useSentinel =
