@@ -14,7 +14,9 @@ Users configure preferences once at [qt.rtuna.dev/settings](https://qt.rtuna.dev
 qt.rtuna.dev/{chain}/{token}            → user's default action (trade)
 qt.rtuna.dev/{chain}/{token}/trade      → user's preferred trading platform
 qt.rtuna.dev/{chain}/{token}/chart      → user's preferred charting tool
-qt.rtuna.dev/{chain}/{token}/explore    → user's preferred block explorer
+qt.rtuna.dev/{chain}/{token}/explore    → user's preferred block explorer (address/token)
+qt.rtuna.dev/{chain}/{hash}/tx          → their block explorer's transaction page
+qt.rtuna.dev/{chain}/{number}/block     → their block explorer's block page
 ```
 
 ## Supported Chains
@@ -61,5 +63,6 @@ https://qt.rtuna.dev/eth/{token}/explore
 - The token should be the contract/mint address
 - Default action (no suffix) redirects to trade — use this when the intent is general
 - Append `/trade`, `/chart`, or `/explore` when the intent is specific
+- Use `/tx` for a transaction hash and `/block` for a block number — both redirect to the user's preferred explorer's corresponding page (the `{token}` segment carries the hash or number)
 - If a user hasn't configured preferences, they get sensible defaults (Axiom for SOL trading, Sigma VIP for EVM trading, DexScreener for charting)
 - Link to `qt.rtuna.dev/settings` when suggesting users customize their experience

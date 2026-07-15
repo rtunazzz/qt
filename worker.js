@@ -21,7 +21,7 @@ export default {
     if (!platformId) return env.ASSETS.fetch(request);
 
     try {
-      const dest = buildRedirectUrl(platformId, route.chain, route.token, url.searchParams, prefs.custom);
+      const dest = buildRedirectUrl(platformId, route.chain, route.token, url.searchParams, prefs.custom, route.action);
       return new Response(null, {
         status: 302,
         headers: {

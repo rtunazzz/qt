@@ -18,7 +18,9 @@ Send a single `qt.rtuna.dev` link in your Discord embeds, Telegram notifications
 qt.rtuna.dev/{chain}/{token}            →  default action (trade)
 qt.rtuna.dev/{chain}/{token}/trade      →  trading platform
 qt.rtuna.dev/{chain}/{token}/chart      →  charting tool
-qt.rtuna.dev/{chain}/{token}/explore    →  block explorer
+qt.rtuna.dev/{chain}/{token}/explore    →  block explorer (address/token)
+qt.rtuna.dev/{chain}/{hash}/tx          →  block explorer (transaction)
+qt.rtuna.dev/{chain}/{number}/block     →  block explorer (block)
 ```
 
 Users configure their preferred platforms at [qt.rtuna.dev/settings](https://qt.rtuna.dev/settings). Preferences are stored locally in browser cookies — no accounts, no server-side data.

@@ -46,6 +46,10 @@ function resolveSlug(overrides, chain) {
   return overrides?.[chain] ?? CHAINS[chain].slug ?? chain;
 }
 
+function explorerPath(kind, { tx = "tx", block = "block", def }) {
+  return kind === "tx" ? tx : kind === "block" ? block : def;
+}
+
 const COOKIE_NAME = "qt";
 
 function chainsForEcosystem(eco) {
@@ -135,25 +139,25 @@ const PLATFORMS = [
   { id: "shuriken", name: "Shuriken", categories: ["trade"], chains: ["sui", "tron", "eth", "base", "bsc", "arb", "avax", "ftm"],
     buildUrl: (c, t) => `https://t.me/ShurikenTradeBot?start=${t}` },
   { id: "solscan", name: "Solscan", categories: ["explore"], chains: ["sol"],
-    buildUrl: (c, t) => `https://solscan.io/token/${t}` },
+    buildUrl: (c, t, s, v, sp, kind) => `https://solscan.io/${explorerPath(kind, { def: "token" })}/${t}` },
   { id: "etherscan", name: "Etherscan", categories: ["explore"], chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "ftm", "blast", "mantle", "sonic", "worldchain", "apechain", "unichain", "monad", "abstract", "hyperevm", "plasma", "megaeth", "berachain"],
-    buildUrl: (c, t) => {
+    buildUrl: (c, t, s, v, sp, kind) => {
       const d = { eth: "etherscan.io", base: "basescan.org", bsc: "bscscan.com", arb: "arbiscan.io", op: "optimistic.etherscan.io", matic: "polygonscan.com", avax: "snowscan.xyz", ftm: "ftmscan.com", blast: "blastscan.io", mantle: "mantlescan.xyz", sonic: "sonicscan.org", worldchain: "worldscan.org", apechain: "apescan.io", unichain: "uniscan.xyz", monad: "monadscan.com", abstract: "abscan.org", hyperevm: "hyperevmscan.io", plasma: "plasmascan.to", megaeth: "mega.etherscan.io", berachain: "beratrail.io" };
-      return `https://${d[c] || "etherscan.io"}/token/${t}`;
+      return `https://${d[c] || "etherscan.io"}/${explorerPath(kind, { def: "token" })}/${t}`;
     } },
   { id: "blockscout", name: "Blockscout", categories: ["explore"], chains: ["eth", "base", "arb", "matic", "soneium", "shape", "story", "morph", "ink", "flow", "tempo", "robinhood", "arc"],
-    buildUrl: (c, t) => {
+    buildUrl: (c, t, s, v, sp, kind) => {
       const d = { eth: "eth.blockscout.com", base: "base.blockscout.com", arb: "arbitrum.blockscout.com", matic: "polygon.blockscout.com", soneium: "soneium.blockscout.com", shape: "shapescan.xyz", story: "www.storyscan.io", morph: "explorer.morph.network", ink: "explorer.inkonchain.com", flow: "evm.flowscan.io", tempo: "explore.tempo.xyz", robinhood: "robinhoodchain.blockscout.com", arc: "arc-mainnet.cloud.blockscout.com" };
-      return `https://${d[c] || "explorer.blockscout.com"}/address/${t}`;
+      return `https://${d[c] || "explorer.blockscout.com"}/${explorerPath(kind, { def: "address" })}/${t}`;
     } },
   { id: "suiscan", name: "Suiscan", categories: ["explore"], chains: ["sui"],
-    buildUrl: (c, t) => `https://suiscan.xyz/mainnet/coin/${t}` },
+    buildUrl: (c, t, s, v, sp, kind) => `https://suiscan.xyz/mainnet/${explorerPath(kind, { block: "checkpoint", def: "coin" })}/${t}` },
   { id: "tronscan", name: "Tronscan", categories: ["explore"], chains: ["tron"],
-    buildUrl: (c, t) => `https://tronscan.org/#/token20/${t}` },
+    buildUrl: (c, t, s, v, sp, kind) => `https://tronscan.org/#/${explorerPath(kind, { tx: "transaction", def: "token20" })}/${t}` },
   { id: "mempool", name: "Mempool", categories: ["explore"], chains: ["btc"],
-    buildUrl: (c, t) => `https://mempool.space/address/${t}` },
+    buildUrl: (c, t, s, v, sp, kind) => `https://mempool.space/${explorerPath(kind, { def: "address" })}/${t}` },
   { id: "oklink", name: "OKLink", categories: ["explore"], chains: ["xlayer"],
-    buildUrl: (c, t) => `https://www.oklink.com/x-layer/token/${t}` },
+    buildUrl: (c, t, s, v, sp, kind) => `https://www.oklink.com/x-layer/${explorerPath(kind, { def: "token" })}/${t}` },
   { id: "dexscreener", name: "DexScreener", categories: ["chart"], chains: ["sol", "sui", "tron", "ton", ...ALL_EVM], params: ["maker"],
     resolveChain: (c) => resolveSlug(null, c),
     buildUrl: (c, t, s) => `https://dexscreener.com/${s}/${t}` },
@@ -176,6 +180,10 @@ const PLATFORM_MAP = Object.fromEntries(PLATFORMS.map((p) => [p.id, p]));
 
 const ACTIONS = ["trade", "chart", "explore"];
 
+const EXPLORE_ALIASES = { tx: "explore", block: "explore" };
+const ROUTE_ACTIONS = new Set([...ACTIONS, ...Object.keys(EXPLORE_ALIASES)]);
+const KIND_SEGMENT = { explore: "address", tx: "tx", block: "block" };
+
 const DEFAULT_PREFS = {
   sol: { trade: "axiom", chart: "dexscreener", explore: "solscan" },
   evm: { trade: "based", chart: "dexscreener", explore: "etherscan" },
@@ -192,7 +200,7 @@ function parseRoute(pathname) {
   const token = parts[1];
   const action = parts[2]?.toLowerCase() || "trade";
   if (!CHAINS[chain]) return null;
-  if (!ACTIONS.includes(action)) return null;
+  if (!ROUTE_ACTIONS.has(action)) return null;
   return { chain, token, action };
 }
 
@@ -213,13 +221,14 @@ function resolveVariant(platform, variantId) {
     || platform.variants[0];
 }
 
-function fillTemplate(template, chain, token, searchParams) {
+function fillTemplate(template, chain, token, searchParams, kind) {
   const meta = CHAINS[chain] || {};
   const vars = {
     token,
     chain,
     chainId: meta.chainId != null ? String(meta.chainId) : "",
     slug: meta.slug || chain,
+    kind: KIND_SEGMENT[kind] || KIND_SEGMENT.explore,
   };
   return template.replace(/\{(\w+)\}/g, (_, key) => {
     if (key in vars) return vars[key];
@@ -240,18 +249,18 @@ function customPlatform(entry) {
     categories: ACTIONS,
     chains: Object.keys(CHAINS),
     custom: true,
-    buildUrl: (c, t, _s, _v, searchParams) => fillTemplate(entry.url, c, t, searchParams),
+    buildUrl: (c, t, _s, _v, searchParams, kind) => fillTemplate(entry.url, c, t, searchParams, kind),
   };
 }
 
-function buildRedirectUrl(platformId, chain, token, searchParams, customLinks) {
+function buildRedirectUrl(platformId, chain, token, searchParams, customLinks, kind) {
   const parsed = parsePlatformId(platformId);
   const custom = parsed && findCustom(customLinks, parsed.base);
   const platform = custom ? customPlatform(custom) : (parsed && PLATFORM_MAP[parsed.base]);
   if (!platform) throw new Error(`Unknown platform "${platformId}"`);
   const variant = resolveVariant(platform, parsed.variant);
   const s = platform.resolveChain ? platform.resolveChain(chain) : chain;
-  let dest = platform.buildUrl(chain, token, s, variant, searchParams);
+  let dest = platform.buildUrl(chain, token, s, variant, searchParams, kind);
   if (platform.params?.length && platform.params.some((k) => searchParams.has(k))) {
     const target = new URL(dest);
     for (const key of platform.params) {
@@ -290,6 +299,7 @@ function resolveDirect(prefs, chain, action) {
 }
 
 function resolve(prefs, chain, action) {
+  action = EXPLORE_ALIASES[action] || action;
   if (action === "chart") {
     const eco = CHAINS[chain]?.ecosystem;
     const override = prefs.overrides?.[chain]?.chart;

@@ -521,6 +521,8 @@ function renderFooter() {
     { suffix: "/trade", desc: "trade" },
     { suffix: "/chart", desc: "chart" },
     { suffix: "/explore", desc: "explore" },
+    { suffix: "/tx", desc: "explorer tx" },
+    { suffix: "/block", desc: "explorer block" },
   ];
 
   let html = '<div class="footer-title">Usage</div>';
