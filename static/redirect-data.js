@@ -149,7 +149,7 @@ const PLATFORMS = [
   { id: "etherscan", name: "Etherscan", categories: ["explore"], chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "ftm", "blast", "mantle", "sonic", "worldchain", "apechain", "unichain", "monad", "abstract", "hyperevm", "plasma", "megaeth", "berachain", "robinhood"],
     buildUrl: (c, t, s, v, sp, kind) => {
       const d = { eth: "etherscan.io", base: "basescan.org", bsc: "bscscan.com", arb: "arbiscan.io", op: "optimistic.etherscan.io", matic: "polygonscan.com", avax: "snowscan.xyz", ftm: "ftmscan.com", blast: "blastscan.io", mantle: "mantlescan.xyz", sonic: "sonicscan.org", worldchain: "worldscan.org", apechain: "apescan.io", unichain: "uniscan.xyz", monad: "monadscan.com", abstract: "abscan.org", hyperevm: "hyperevmscan.io", plasma: "plasmascan.to", megaeth: "mega.etherscan.io", berachain: "beratrail.io", robinhood: "robinscan.io" };
-      return `https://${d[c] || "etherscan.io"}/${explorerPath(kind, { def: "token" })}/${t}`;
+      return `https://${d[c] || "etherscan.io"}/${explorerPath(kind, { def: "address" })}/${t}`;
     } },
   { id: "blockscout", name: "Blockscout", categories: ["explore"], chains: ["eth", "base", "arb", "matic", "soneium", "shape", "story", "morph", "ink", "flow", "tempo", "robinhood", "arc"],
     buildUrl: (c, t, s, v, sp, kind) => {
