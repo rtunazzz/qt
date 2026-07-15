@@ -77,11 +77,15 @@ const PLATFORMS = [
     buildUrl: (c, t) => `https://jup.ag/swap/SOL-${t}` },
   { id: "photon-sol", name: "Photon", categories: ["trade", "chart"], chains: ["sol"],
     buildUrl: (c, t) => `https://photon-sol.tinyastro.io/en/r/@rtunazzz/${t}` },
-  { id: "axiom", name: "Axiom", categories: ["trade", "chart"], chains: ["sol"],
-    buildUrl: (c, t) => `https://axiom.trade/t/${t}/@rtuna` },
+  { id: "axiom", name: "Axiom", categories: ["trade", "chart"], chains: ["sol", "bsc", "robinhood"],
+    buildUrl: (c, t) => {
+      if (c === "sol") return `https://axiom.trade/t/${t}/@rtuna`;
+      const slug = { bsc: "bnb" };
+      return `https://axiom.trade/meme/${t}?chain=${slug[c] ?? c}`;
+    } },
   { id: "bloom-sol", name: "Bloom", categories: ["trade"], chains: ["sol"],
     buildUrl: (c, t) => `https://t.me/BloomSolana_bot?start=ref_rtuna_ca_${t}` },
-  { id: "uniswap", name: "Uniswap", categories: ["trade", "chart"], chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "blast", "unichain"], params: ["inputCurrency"],
+  { id: "uniswap", name: "Uniswap", categories: ["trade", "chart"], chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "blast", "unichain", "worldchain", "soneium"], params: ["inputCurrency"],
     resolveChain: (c) => resolveSlug({ bsc: "bnb" }, c),
     buildUrl: (c, t, s) => `https://app.uniswap.org/swap?outputCurrency=${t}&chain=${s}` },
   { id: "1inch", name: "1inch", categories: ["trade"], chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "ftm", "blast", "mantle"],
@@ -91,7 +95,7 @@ const PLATFORMS = [
     buildUrl: (c, t) => `https://photon-base.tinyastro.io/en/r/@rtunazzz/${t}` },
   { id: "gmgn", name: "GMGN", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "tron", "monad", "robinhood"],
     buildUrl: (c, t) => `https://gmgn.ai/${c}/token/rtuna_${t}` },
-  { id: "sigma", name: "Sigma", categories: ["trade"], chains: ["eth", "base", "bsc"],
+  { id: "sigma", name: "Sigma", categories: ["trade"], chains: ["eth", "base", "bsc", "avax", "sol", "robinhood"],
     variants: [
       { id: "default", name: "Standard", bot: "Sigma_buyBot" },
       { id: "sell", name: "Sell", bot: "Sigma_SellBot" },
@@ -115,7 +119,7 @@ const PLATFORMS = [
       const pathSlug = { hyperevm: "hype" };
       return `https://basedbot.app/r/rtunazzz/token/${pathSlug[c] ?? c}/${t}`;
     } },
-  { id: "banana", name: "Banana Gun", categories: ["trade"], chains: ["eth", "base", "bsc"],
+  { id: "banana", name: "Banana Gun", categories: ["trade"], chains: ["eth", "base", "bsc", "megaeth", "robinhood"],
     variants: [
       { id: "default", name: "Standard", bot: "BananaGun_bot" },
       ...Array.from({ length: 19 }, (_, i) => ({ id: `t${i + 2}`, name: `Server ${i + 2}`, bot: `BananaGun${i + 2}_bot` })),
@@ -127,20 +131,20 @@ const PLATFORMS = [
       ...Array.from({ length: 16 }, (_, i) => ({ id: `t${i + 2}`, name: `Server ${i + 2}`, bot: `BananaGunSniper${i + 2}_bot` })),
     ],
     buildUrl: (c, t, _, v) => `https://t.me/${v.bot}?start=snp_rtunazzz_${t}` },
-  { id: "bloom-evm", name: "Bloom", categories: ["trade"], chains: ["eth", "base", "bsc", "hyperevm"],
+  { id: "bloom-evm", name: "Bloom", categories: ["trade"], chains: ["eth", "base", "bsc", "hyperevm", "robinhood"],
     buildUrl: (c, t) => `https://t.me/BloomEVMbot?start=ref_tuna_ca_${t}` },
-  { id: "fomo", name: "FOMO", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc"],
+  { id: "fomo", name: "FOMO", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "monad", "robinhood"],
     resolveChain: resolveChainId,
     buildUrl: (c, t, s) => `https://fomo.family/coin?address=${t}&chainId=${s}` },
-  { id: "azura", name: "Azura", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc"],
+  { id: "azura", name: "Azura", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "arb"],
     resolveChain: resolveChainId,
     buildUrl: (c, t, s) => `https://app.azura.xyz/spot/${s}/${t}` },
   { id: "photon-tron", name: "Photon", categories: ["trade", "chart"], chains: ["tron"],
     buildUrl: (c, t) => `https://photon-tron.tinyastro.io/en/r/@rtunazzz/${t}` },
-  { id: "maestro", name: "Maestro", categories: ["trade"], chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "tron", "ton", "monad"],
+  { id: "maestro", name: "Maestro", categories: ["trade"], chains: [...ALL_EVM, "tron", "ton"],
     buildUrl: (c, t) => `https://t.me/MaestroSniperBot?start=${t}-rtunazzz` },
-  { id: "padre", name: "Padre", categories: ["trade", "chart"], chains: ["sol", "bsc"],
-    resolveChain: (c) => resolveSlug(null, c),
+  { id: "padre", name: "Padre", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "robinhood"],
+    resolveChain: (c) => resolveSlug({ eth: "eth" }, c),
     buildUrl: (c, t, s) => `https://trade.padre.gg/trade/${s}/${t}?rk=tuna` },
   { id: "shuriken", name: "Shuriken", categories: ["trade"], chains: ["sui", "tron", "eth", "base", "bsc", "arb", "avax", "ftm"],
     buildUrl: (c, t) => `https://t.me/ShurikenTradeBot?start=${t}` },
