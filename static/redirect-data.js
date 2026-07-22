@@ -34,6 +34,7 @@ const CHAINS = {
   tempo:      { name: "Tempo",      ecosystem: "evm",  chainId: 4217,       slug: "tempo" },
   robinhood:  { name: "Robinhood",  ecosystem: "evm",  chainId: 4663,       slug: "robinhood" },
   arc:        { name: "Arc",        ecosystem: "evm",  chainId: 5042,       slug: "arc" },
+  stable:     { name: "Stable",     ecosystem: "evm",  chainId: 988,        slug: "stable" },
 };
 
 function resolveChainId(chain) {
@@ -150,9 +151,9 @@ const PLATFORMS = [
     buildUrl: (c, t) => `https://t.me/ShurikenTradeBot?start=${t}` },
   { id: "solscan", name: "Solscan", categories: ["explore"], chains: ["sol"],
     buildUrl: (c, t, s, v, sp, kind) => `https://solscan.io/${explorerPath(kind, { def: "token" })}/${t}` },
-  { id: "etherscan", name: "Etherscan", categories: ["explore"], chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "ftm", "blast", "mantle", "sonic", "worldchain", "apechain", "unichain", "monad", "abstract", "hyperevm", "plasma", "megaeth", "berachain", "robinhood"],
+  { id: "etherscan", name: "Etherscan", categories: ["explore"], chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "ftm", "blast", "mantle", "sonic", "worldchain", "apechain", "unichain", "monad", "abstract", "hyperevm", "plasma", "megaeth", "berachain", "robinhood", "stable"],
     buildUrl: (c, t, s, v, sp, kind) => {
-      const d = { eth: "etherscan.io", base: "basescan.org", bsc: "bscscan.com", arb: "arbiscan.io", op: "optimistic.etherscan.io", matic: "polygonscan.com", avax: "snowscan.xyz", ftm: "ftmscan.com", blast: "blastscan.io", mantle: "mantlescan.xyz", sonic: "sonicscan.org", worldchain: "worldscan.org", apechain: "apescan.io", unichain: "uniscan.xyz", monad: "monadscan.com", abstract: "abscan.org", hyperevm: "hyperevmscan.io", plasma: "plasmascan.to", megaeth: "mega.etherscan.io", berachain: "beratrail.io", robinhood: "robinscan.io" };
+      const d = { eth: "etherscan.io", base: "basescan.org", bsc: "bscscan.com", arb: "arbiscan.io", op: "optimistic.etherscan.io", matic: "polygonscan.com", avax: "snowscan.xyz", ftm: "ftmscan.com", blast: "blastscan.io", mantle: "mantlescan.xyz", sonic: "sonicscan.org", worldchain: "worldscan.org", apechain: "apescan.io", unichain: "uniscan.xyz", monad: "monadscan.com", abstract: "abscan.org", hyperevm: "hyperevmscan.io", plasma: "plasmascan.to", megaeth: "mega.etherscan.io", berachain: "beratrail.io", robinhood: "robinscan.io", stable: "stablescan.xyz" };
       return `https://${d[c] || "etherscan.io"}/${explorerPath(kind, { def: "address" })}/${t}`;
     } },
   { id: "blockscout", name: "Blockscout", categories: ["explore"], chains: ["eth", "base", "arb", "matic", "soneium", "shape", "story", "morph", "ink", "flow", "tempo", "robinhood", "arc"],
