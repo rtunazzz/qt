@@ -105,7 +105,7 @@ const PLATFORMS = [
       ...Array.from({ length: 9 }, (_, i) => ({ id: `t${i + 3}`, name: `Server ${i + 3}`, bot: `SigmaTrading${i + 3}_bot` })),
     ],
     buildUrl: (c, t, _, v) => `https://t.me/${v.bot}?start=x1865619192-${t}-${c}` },
-  { id: "based", name: "Based Bot", categories: ["trade"], chains: ["sol", "eth", "base", "bsc", "arb", "avax", "abstract", "hyperevm", "ink", "story", "xlayer", "plasma", "unichain", "monad", "megaeth", "tempo", "robinhood", "arc"],
+  { id: "based", name: "Based Bot", categories: ["trade"], chains: ["sol", "eth", "base", "bsc", "arb", "avax", "abstract", "hyperevm", "ink", "story", "xlayer", "plasma", "unichain", "monad", "megaeth", "tempo", "robinhood", "arc", "stable"],
     variants: [
       { id: "default", name: "Standard", bot: "based_eth_bot" },
       ...Array.from({ length: 4 }, (_, i) => ({ id: `based${i + 2}`, name: `Server ${i + 2}`, bot: `based${i + 2}_eth_bot` })),
@@ -115,7 +115,7 @@ const PLATFORMS = [
       { id: "exclusive", name: "Exclusive", bot: "based_exclusive_bot" },
     ],
     buildUrl: (c, t, _, v) => `https://t.me/${v.bot}?start=r_rtunazzz_b_${t}` },
-  { id: "based-web", name: "Based Bot Web", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "arb", "avax", "abstract", "hyperevm", "ink", "story", "xlayer", "plasma", "unichain", "monad", "megaeth", "tempo", "robinhood", "arc"],
+  { id: "based-web", name: "Based Bot Web", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "arb", "avax", "abstract", "hyperevm", "ink", "story", "xlayer", "plasma", "unichain", "monad", "megaeth", "tempo", "robinhood", "arc", "stable"],
     buildUrl: (c, t) => {
       const pathSlug = { hyperevm: "hype" };
       return `https://basedbot.app/r/rtunazzz/token/${pathSlug[c] ?? c}/${t}`;
