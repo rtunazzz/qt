@@ -94,7 +94,7 @@ const PLATFORMS = [
     buildUrl: (c, t, s) => `https://app.1inch.io/#/${s}/simple/swap/ETH/${t}` },
   { id: "photon-base", name: "Photon", categories: ["trade", "chart"], chains: ["base"],
     buildUrl: (c, t) => `https://photon-base.tinyastro.io/en/r/@rtunazzz/${t}` },
-  { id: "gmgn", name: "GMGN", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "tron", "monad", "robinhood", "stable"],
+  { id: "gmgn", name: "GMGN", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "tron", "blast", "monad", "megaeth", "hyperevm", "xlayer", "robinhood", "stable"],
     buildUrl: (c, t) => `https://gmgn.ai/${c}/token/rtuna_${t}` },
   { id: "sigma", name: "Sigma", categories: ["trade"], chains: ["eth", "base", "bsc", "avax", "sol", "robinhood"],
     variants: [
