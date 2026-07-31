@@ -200,7 +200,7 @@ const KIND_SEGMENT = { explore: "address", tx: "tx", block: "block" };
 
 const DEFAULT_PREFS = {
   sol: { trade: "axiom", trade2: SAME_AS_TRADE, chart: "dexscreener", explore: "solscan" },
-  evm: { trade: "based", trade2: SAME_AS_TRADE, chart: "dexscreener", explore: "etherscan" },
+  evm: { trade: "based-web", trade2: SAME_AS_TRADE, chart: "dexscreener", explore: "etherscan" },
   sui: { explore: "suiscan" },
   tron: { explore: "tronscan" },
   btc: { explore: "mempool" },
