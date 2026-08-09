@@ -136,7 +136,7 @@ const PLATFORMS = [
     buildUrl: (c, t) => `https://t.me/BloomEVMbot?start=ref_tuna_ca_${t}` },
   { id: "fomo", name: "FOMO", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "monad", "robinhood"],
     resolveChain: resolveChainId,
-    buildUrl: (c, t, s) => `https://fomo.family/coin?address=${t}&chainId=${s}` },
+    buildUrl: (c, t, s) => `https://fomo.family/coin?address=${t}&chainId=${s}&r=bandemic` },
   { id: "azura", name: "Azura", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "arb"],
     resolveChain: resolveChainId,
     buildUrl: (c, t, s) => `https://app.azura.xyz/spot/${s}/${t}` },
