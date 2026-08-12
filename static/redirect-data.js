@@ -86,6 +86,25 @@ const PLATFORMS = [
     } },
   { id: "bloom-sol", name: "Bloom", categories: ["trade"], chains: ["sol"],
     buildUrl: (c, t) => `https://t.me/BloomSolana_bot?start=ref_rtuna_ca_${t}` },
+  // pump.fun/* is a universal link (see /.well-known/apple-app-site-association), so this opens the
+  // native app when installed. pid arms the AppsFlyer smart banner's deferred attribution when it isn't.
+  { id: "pumpfun", name: "Pump App", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "robinhood"],
+    buildUrl: (c, t) => {
+      const q = new URLSearchParams({
+        mint: t,
+        content_type: "coin",
+        share_type: "coin_share",
+        c: "coin_share",
+        pid: "af_app_invites",
+        af_channel: "app",
+        af_siteid: "6717572591",
+        af_force_deeplink: "true",
+        af_dp: `pump://coin?mint=${t}`,
+        shared_by: "spongenig",
+        af_referrer_customer_id: "CGuqyecTCZ33xYqbn6yvbr7Kxn7LjttJPBCtQ3Roav1A",
+      });
+      return `https://pump.fun/coin/${t}?${q}`;
+    } },
   { id: "uniswap", name: "Uniswap", categories: ["trade", "chart"], chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "blast", "unichain", "worldchain", "soneium"], params: ["inputCurrency"],
     resolveChain: (c) => resolveSlug({ bsc: "bnb" }, c),
     buildUrl: (c, t, s) => `https://app.uniswap.org/swap?outputCurrency=${t}&chain=${s}` },
