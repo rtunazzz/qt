@@ -212,6 +212,7 @@ const ACTIONS = ["trade", "trade2", "chart", "explore"];
 
 const SAME_AS_TRADE = "@trade";
 const SENTINEL_ACTIONS = new Set(["trade2", "chart"]);
+const TRADE_SIBLING = { trade: "trade2", trade2: "trade" };
 
 const EXPLORE_ALIASES = { tx: "explore", block: "explore" };
 const ROUTE_ACTIONS = new Set([...ACTIONS, ...Object.keys(EXPLORE_ALIASES)]);
@@ -314,7 +315,7 @@ function isValidFor(id, chain, customLinks) {
   return true;
 }
 
-function resolveDirect(prefs, chain, action) {
+function preferredFor(prefs, chain, action) {
   const eco = CHAINS[chain]?.ecosystem;
   if (!eco) return null;
 
@@ -324,6 +325,23 @@ function resolveDirect(prefs, chain, action) {
 
   const ecoDefault = prefs[eco]?.[action];
   if (isValidFor(ecoDefault, chain, custom)) return ecoDefault;
+
+  return null;
+}
+
+function resolveDirect(prefs, chain, action) {
+  const eco = CHAINS[chain]?.ecosystem;
+  if (!eco) return null;
+
+  const direct = preferredFor(prefs, chain, action);
+  if (direct) return direct;
+
+  // when the preferred trade platform doesn't cover this chain, try the other trade slot before any platform
+  const sibling = TRADE_SIBLING[action];
+  if (sibling) {
+    const alt = preferredFor(prefs, chain, sibling);
+    if (alt) return alt;
+  }
 
   const first = PLATFORMS.find((p) => p.categories.includes(categoryFor(action)) && p.chains.includes(chain));
   return first?.id ?? null;

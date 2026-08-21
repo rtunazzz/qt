@@ -1,4 +1,6 @@
-importScripts("/static/redirect-data.js");
+// redirect-data.js is prepended at deploy time (see .github/workflows/deploy.yml). It is inlined
+// rather than importScripts'd so the worker's bytes change whenever the platform list does —
+// otherwise the browser sees an unchanged sw.js, never updates, and serves the install-time snapshot forever.
 
 self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (e) => e.waitUntil(self.clients.claim()));
