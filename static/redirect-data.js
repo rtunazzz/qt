@@ -88,7 +88,7 @@ const PLATFORMS = [
     buildUrl: (c, t) => `https://t.me/BloomSolana_bot?start=ref_rtuna_ca_${t}` },
   // pump.fun/* is a universal link (see /.well-known/apple-app-site-association), so this opens the
   // native app when installed. pid arms the AppsFlyer smart banner's deferred attribution when it isn't.
-  { id: "pumpfun", name: "Pump App", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "robinhood"],
+  { id: "pumpfun", name: "Pump App", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "hyperevm", "robinhood"],
     buildUrl: (c, t) => {
       const q = new URLSearchParams({
         mint: t,
