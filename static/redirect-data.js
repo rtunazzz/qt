@@ -171,9 +171,9 @@ const PLATFORMS = [
     buildUrl: (c, t) => `https://t.me/ShurikenTradeBot?start=${t}` },
   { id: "solscan", name: "Solscan", categories: ["explore"], chains: ["sol"],
     buildUrl: (c, t, s, v, sp, kind) => `https://solscan.io/${explorerPath(kind, { def: "token" })}/${t}` },
-  { id: "etherscan", name: "Etherscan", categories: ["explore"], chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "ftm", "blast", "mantle", "sonic", "worldchain", "apechain", "unichain", "monad", "abstract", "hyperevm", "plasma", "megaeth", "berachain", "robinhood", "stable"],
+  { id: "etherscan", name: "Etherscan", categories: ["explore"], chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "ftm", "blast", "mantle", "sonic", "worldchain", "apechain", "unichain", "monad", "abstract", "hyperevm", "plasma", "megaeth", "berachain", "robinhood", "arc", "stable"],
     buildUrl: (c, t, s, v, sp, kind) => {
-      const d = { eth: "etherscan.io", base: "basescan.org", bsc: "bscscan.com", arb: "arbiscan.io", op: "optimistic.etherscan.io", matic: "polygonscan.com", avax: "snowscan.xyz", ftm: "ftmscan.com", blast: "blastscan.io", mantle: "mantlescan.xyz", sonic: "sonicscan.org", worldchain: "worldscan.org", apechain: "apescan.io", unichain: "uniscan.xyz", monad: "monadscan.com", abstract: "abscan.org", hyperevm: "hyperevmscan.io", plasma: "plasmascan.to", megaeth: "mega.etherscan.io", berachain: "beratrail.io", robinhood: "robin.etherscan.io", stable: "stablescan.xyz" };
+      const d = { eth: "etherscan.io", base: "basescan.org", bsc: "bscscan.com", arb: "arbiscan.io", op: "optimistic.etherscan.io", matic: "polygonscan.com", avax: "snowscan.xyz", ftm: "ftmscan.com", blast: "blastscan.io", mantle: "mantlescan.xyz", sonic: "sonicscan.org", worldchain: "worldscan.org", apechain: "apescan.io", unichain: "uniscan.xyz", monad: "monadscan.com", abstract: "abscan.org", hyperevm: "hyperevmscan.io", plasma: "plasmascan.to", megaeth: "mega.etherscan.io", berachain: "beratrail.io", robinhood: "robin.etherscan.io", arc: "arc.etherscan.io", stable: "stablescan.xyz" };
       return `https://${d[c] || "etherscan.io"}/${explorerPath(kind, { def: "address" })}/${t}`;
     } },
   { id: "arcscan", name: "Arc Scan", categories: ["explore"], chains: ["arc"],
