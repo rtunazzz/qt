@@ -88,7 +88,7 @@ const PLATFORMS = [
     buildUrl: (c, t) => `https://t.me/BloomSolana_bot?start=ref_rtuna_ca_${t}` },
   // pump.fun/* is a universal link (see /.well-known/apple-app-site-association), so this opens the
   // native app when installed. pid arms the AppsFlyer smart banner's deferred attribution when it isn't.
-  { id: "pumpfun", name: "Pump App", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "monad", "hyperevm", "robinhood", "arc"],
+  { id: "pumpfun", name: "Pump App", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "monad", "hyperevm", "ink", "robinhood", "arc"],
     buildUrl: (c, t) => {
       const q = new URLSearchParams({
         mint: t,
@@ -154,9 +154,9 @@ const PLATFORMS = [
     buildUrl: (c, t, _, v) => `https://t.me/${v.bot}?start=snp_rtunazzz_${t}` },
   { id: "bloom-evm", name: "Bloom", categories: ["trade"], chains: ["eth", "base", "bsc", "hyperevm", "robinhood"],
     buildUrl: (c, t) => `https://t.me/BloomEVMbot?start=ref_tuna_ca_${t}` },
-  { id: "fomo", name: "FOMO", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "monad", "robinhood", "arc"],
-    resolveChain: resolveChainId,
-    buildUrl: (c, t, s) => `https://fomo.family/coin?address=${t}&chainId=${s}&r=bandemic` },
+  { id: "fomo", name: "FOMO", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "monad", "hyperevm", "robinhood", "arc"],
+    resolveChain: (c) => resolveSlug({ bsc: "bnb", hyperevm: "hyperliquid" }, c),
+    buildUrl: (c, t, s) => `https://fomo.family/tokens/${s}/${t}?r=bandemic` },
   { id: "azura", name: "Azura", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "arb"],
     resolveChain: resolveChainId,
     buildUrl: (c, t, s) => `https://app.azura.xyz/spot/${s}/${t}` },
