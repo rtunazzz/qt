@@ -31,4 +31,4 @@ Static site (vanilla HTML/CSS/JS) deployed to Cloudflare Pages. No build step, n
 ## Conventions
 
 - Commit messages: `type: description` (feat, fix, refactor, update, chore, docs)
-- PRs: summary section only, no test plan section
+- PR body: `~/.claude/rules/pr-hygiene.md` (no test-plan section)
