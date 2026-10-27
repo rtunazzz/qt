@@ -35,6 +35,7 @@ const CHAINS = {
   robinhood:  { name: "Robinhood",  ecosystem: "evm",  chainId: 4663,       slug: "robinhood" },
   arc:        { name: "Arc",        ecosystem: "evm",  chainId: 5042,       slug: "arc" },
   stable:     { name: "Stable",     ecosystem: "evm",  chainId: 988,        slug: "stable" },
+  elysium:    { name: "Elysium",    ecosystem: "evm",  chainId: 99901,      slug: "elysium" },
 };
 
 function resolveChainId(chain) {
@@ -183,6 +184,8 @@ const PLATFORMS = [
       const d = { eth: "eth.blockscout.com", base: "base.blockscout.com", arb: "arbitrum.blockscout.com", matic: "polygon.blockscout.com", soneium: "soneium.blockscout.com", shape: "shapescan.xyz", story: "www.storyscan.io", morph: "explorer.morph.network", ink: "explorer.inkonchain.com", flow: "evm.flowscan.io", tempo: "explore.tempo.xyz", robinhood: "robinhoodchain.blockscout.com", arc: "arc-mainnet.cloud.blockscout.com" };
       return `https://${d[c] || "explorer.blockscout.com"}/${explorerPath(kind, { def: "address" })}/${t}`;
     } },
+  { id: "elysium", name: "Elysium", categories: ["explore"], chains: ["elysium"],
+    buildUrl: (c, t, s, v, sp, kind) => `https://elysium.kinetiq.xyz/${explorerPath(kind, { tx: "TX", block: "BLOCK", def: "ADDRESS" })}/${t}` },
   { id: "suiscan", name: "Suiscan", categories: ["explore"], chains: ["sui"],
     buildUrl: (c, t, s, v, sp, kind) => `https://suiscan.xyz/mainnet/${explorerPath(kind, { block: "checkpoint", def: "coin" })}/${t}` },
   { id: "tronscan", name: "Tronscan", categories: ["explore"], chains: ["tron"],
