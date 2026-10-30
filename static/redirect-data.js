@@ -117,7 +117,7 @@ const PLATFORMS = [
   { id: "gmgn", name: "GMGN", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "arb", "tron", "blast", "monad", "megaeth", "hyperevm", "xlayer", "robinhood", "arc", "stable"],
     resolveChain: (c) => ({ arb: "arbitrum" })[c] ?? c,
     buildUrl: (c, t, s) => `https://gmgn.ai/${s}/token/rtunazzz_${t}` },
-  { id: "sigma", name: "Sigma", categories: ["trade"], chains: ["eth", "base", "bsc", "avax", "sol", "robinhood", "arc"],
+  { id: "sigma", name: "Sigma", categories: ["trade"], chains: ["eth", "base", "bsc", "avax", "sol", "robinhood", "arc", "elysium"],
     variants: [
       { id: "default", name: "Standard", bot: "Sigma_buyBot" },
       { id: "sell", name: "Sell", bot: "Sigma_SellBot" },
