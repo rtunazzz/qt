@@ -184,6 +184,8 @@ const PLATFORMS = [
       const d = { eth: "eth.blockscout.com", base: "base.blockscout.com", arb: "arbitrum.blockscout.com", matic: "polygon.blockscout.com", soneium: "soneium.blockscout.com", shape: "shapescan.xyz", story: "www.storyscan.io", morph: "explorer.morph.network", ink: "explorer.inkonchain.com", flow: "evm.flowscan.io", tempo: "explore.tempo.xyz", robinhood: "robinhoodchain.blockscout.com", arc: "arc-mainnet.cloud.blockscout.com" };
       return `https://${d[c] || "explorer.blockscout.com"}/${explorerPath(kind, { def: "address" })}/${t}`;
     } },
+  { id: "elyscan", name: "ElysiumScan", categories: ["explore"], chains: ["elysium"],
+    buildUrl: (c, t, s, v, sp, kind) => `https://elyscan.info/${explorerPath(kind, { def: "address" })}/${t}` },
   { id: "elysium", name: "Elysium", categories: ["explore"], chains: ["elysium"],
     buildUrl: (c, t, s, v, sp, kind) => `https://elysium.kinetiq.xyz/${explorerPath(kind, { tx: "TX", block: "BLOCK", def: "ADDRESS" })}/${t}` },
   { id: "suiscan", name: "Suiscan", categories: ["explore"], chains: ["sui"],
