@@ -79,17 +79,18 @@ const PLATFORMS = [
     buildUrl: (c, t) => `https://jup.ag/swap/SOL-${t}` },
   { id: "photon-sol", name: "Photon", categories: ["trade", "chart"], chains: ["sol"],
     buildUrl: (c, t) => `https://photon-sol.tinyastro.io/en/r/@rtunazzz/${t}` },
-  { id: "axiom", name: "Axiom", categories: ["trade", "chart"], chains: ["sol", "bsc", "robinhood"],
+  { id: "axiom", name: "Axiom", categories: ["trade", "chart"], chains: ["sol", "bsc", "robinhood", "eth", "base", "hyperevm", "ink", "arc", "elysium"],
     buildUrl: (c, t) => {
       if (c === "sol") return `https://axiom.trade/t/${t}/@rtuna`;
-      const slug = { bsc: "bnb" };
-      return `https://axiom.trade/meme/${t}?chain=${slug[c] ?? c}`;
+      const slug = { bsc: "bnb", hyperevm: "hype", elysium: "ely" };
+      const path = ["bsc", "robinhood"].includes(c) ? "meme" : "token";
+      return `https://axiom.trade/${path}/${t}?chain=${slug[c] ?? c}`;
     } },
   { id: "bloom-sol", name: "Bloom", categories: ["trade"], chains: ["sol"],
     buildUrl: (c, t) => `https://t.me/BloomSolana_bot?start=ref_rtuna_ca_${t}` },
   // pump.fun/* is a universal link (see /.well-known/apple-app-site-association), so this opens the
   // native app when installed. pid arms the AppsFlyer smart banner's deferred attribution when it isn't.
-  { id: "pumpfun", name: "Pump App", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "monad", "hyperevm", "ink", "robinhood", "arc"],
+  { id: "pumpfun", name: "Pump App", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "monad", "hyperevm", "ink", "robinhood", "arc", "megaeth", "xlayer", "matic", "ton", "elysium"],
     buildUrl: (c, t) => {
       const q = new URLSearchParams({
         mint: t,
@@ -106,18 +107,18 @@ const PLATFORMS = [
       });
       return `https://pump.fun/coin/${t}?${q}`;
     } },
-  { id: "uniswap", name: "Uniswap", categories: ["trade", "chart"], chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "blast", "unichain", "worldchain", "soneium"], params: ["inputCurrency"],
+  { id: "uniswap", name: "Uniswap", categories: ["trade", "chart"], chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "blast", "unichain", "worldchain", "soneium", "sol", "ink", "megaeth", "monad", "robinhood", "arc", "tempo", "xlayer"], params: ["inputCurrency"],
     resolveChain: (c) => resolveSlug({ bsc: "bnb" }, c),
     buildUrl: (c, t, s) => `https://app.uniswap.org/swap?outputCurrency=${t}&chain=${s}` },
-  { id: "1inch", name: "1inch", categories: ["trade"], chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "ftm", "blast", "mantle"],
+  { id: "1inch", name: "1inch", categories: ["trade"], chains: ["eth", "base", "bsc", "arb", "op", "matic", "avax", "ftm", "blast", "mantle", "unichain", "sonic", "monad", "hyperevm", "robinhood"],
     resolveChain: resolveChainId,
     buildUrl: (c, t, s) => `https://app.1inch.io/#/${s}/simple/swap/ETH/${t}` },
   { id: "photon-base", name: "Photon", categories: ["trade", "chart"], chains: ["base"],
     buildUrl: (c, t) => `https://photon-base.tinyastro.io/en/r/@rtunazzz/${t}` },
-  { id: "gmgn", name: "GMGN", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "arb", "tron", "blast", "monad", "megaeth", "hyperevm", "xlayer", "robinhood", "arc", "stable"],
+  { id: "gmgn", name: "GMGN", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "arb", "tron", "blast", "monad", "megaeth", "hyperevm", "xlayer", "robinhood", "arc", "stable", "elysium"],
     resolveChain: (c) => ({ arb: "arbitrum" })[c] ?? c,
     buildUrl: (c, t, s) => `https://gmgn.ai/${s}/token/rtunazzz_${t}` },
-  { id: "sigma", name: "Sigma", categories: ["trade"], chains: ["eth", "base", "bsc", "avax", "sol", "robinhood", "arc", "elysium"],
+  { id: "sigma", name: "Sigma", categories: ["trade"], chains: ["eth", "base", "bsc", "avax", "sol", "robinhood", "arc", "elysium", "arb", "blast", "unichain"],
     variants: [
       { id: "default", name: "Standard", bot: "Sigma_buyBot" },
       { id: "sell", name: "Sell", bot: "Sigma_SellBot" },
@@ -141,7 +142,7 @@ const PLATFORMS = [
       const pathSlug = { hyperevm: "hype" };
       return `https://basedbot.app/r/rtunazzz/token/${pathSlug[c] ?? c}/${t}`;
     } },
-  { id: "banana", name: "Banana Gun", categories: ["trade"], chains: ["eth", "base", "bsc", "megaeth", "robinhood"],
+  { id: "banana", name: "Banana Gun", categories: ["trade"], chains: ["eth", "base", "bsc", "megaeth", "robinhood", "sol", "arc", "stable", "hyperevm", "elysium"],
     variants: [
       { id: "default", name: "Standard", bot: "BananaGun_bot" },
       ...Array.from({ length: 19 }, (_, i) => ({ id: `t${i + 2}`, name: `Server ${i + 2}`, bot: `BananaGun${i + 2}_bot` })),
@@ -153,22 +154,22 @@ const PLATFORMS = [
       ...Array.from({ length: 16 }, (_, i) => ({ id: `t${i + 2}`, name: `Server ${i + 2}`, bot: `BananaGunSniper${i + 2}_bot` })),
     ],
     buildUrl: (c, t, _, v) => `https://t.me/${v.bot}?start=snp_rtunazzz_${t}` },
-  { id: "bloom-evm", name: "Bloom", categories: ["trade"], chains: ["eth", "base", "bsc", "hyperevm", "robinhood"],
+  { id: "bloom-evm", name: "Bloom", categories: ["trade"], chains: ["eth", "base", "bsc", "hyperevm", "robinhood", "arc", "ink"],
     buildUrl: (c, t) => `https://t.me/BloomEVMbot?start=ref_tuna_ca_${t}` },
-  { id: "fomo", name: "FOMO", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "monad", "hyperevm", "robinhood", "arc"],
+  { id: "fomo", name: "FOMO", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "monad", "hyperevm", "robinhood", "arc", "elysium"],
     resolveChain: (c) => resolveSlug({ bsc: "bnb", hyperevm: "hyperliquid" }, c),
     buildUrl: (c, t, s) => `https://fomo.family/tokens/${s}/${t}?r=bandemic` },
-  { id: "azura", name: "Azura", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "arb"],
+  { id: "azura", name: "Azura", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "arb", "robinhood", "elysium"],
     resolveChain: resolveChainId,
     buildUrl: (c, t, s) => `https://app.azura.xyz/spot/${s}/${t}` },
   { id: "photon-tron", name: "Photon", categories: ["trade", "chart"], chains: ["tron"],
     buildUrl: (c, t) => `https://photon-tron.tinyastro.io/en/r/@rtunazzz/${t}` },
-  { id: "maestro", name: "Maestro", categories: ["trade"], chains: [...ALL_EVM, "tron", "ton"],
+  { id: "maestro", name: "Maestro", categories: ["trade"], chains: ["sol", ...ALL_EVM, "tron", "ton"],
     buildUrl: (c, t) => `https://t.me/MaestroSniperBot?start=${t}-rtunazzz` },
-  { id: "padre", name: "Padre", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "robinhood"],
+  { id: "padre", name: "Padre", categories: ["trade", "chart"], chains: ["sol", "eth", "base", "bsc", "robinhood", "arc"],
     resolveChain: (c) => resolveSlug({ eth: "eth" }, c),
     buildUrl: (c, t, s) => `https://trade.padre.gg/trade/${s}/${t}?rk=tuna` },
-  { id: "shuriken", name: "Shuriken", categories: ["trade"], chains: ["sui", "tron", "eth", "base", "bsc", "arb", "avax", "ftm"],
+  { id: "shuriken", name: "Shuriken", categories: ["trade"], chains: ["sui", "tron", "eth", "base", "bsc", "arb", "avax", "ftm", "sol", "monad"],
     buildUrl: (c, t) => `https://t.me/ShurikenTradeBot?start=${t}` },
   { id: "solscan", name: "Solscan", categories: ["explore"], chains: ["sol"],
     buildUrl: (c, t, s, v, sp, kind) => `https://solscan.io/${explorerPath(kind, { def: "token" })}/${t}` },
@@ -184,10 +185,10 @@ const PLATFORMS = [
       const d = { eth: "eth.blockscout.com", base: "base.blockscout.com", arb: "arbitrum.blockscout.com", matic: "polygon.blockscout.com", soneium: "soneium.blockscout.com", shape: "shapescan.xyz", story: "www.storyscan.io", morph: "explorer.morph.network", ink: "explorer.inkonchain.com", flow: "evm.flowscan.io", tempo: "explore.tempo.xyz", robinhood: "robinhoodchain.blockscout.com", arc: "arc-mainnet.cloud.blockscout.com" };
       return `https://${d[c] || "explorer.blockscout.com"}/${explorerPath(kind, { def: "address" })}/${t}`;
     } },
+  { id: "elysium", name: "Elysium", categories: ["explore"], chains: ["elysium"],
+    buildUrl: (c, t, s, v, sp, kind) => `https://elysium.kinetiq.xyz/${explorerPath(kind, { def: "address" })}/${t}` },
   { id: "elyscan", name: "ElysiumScan", categories: ["explore"], chains: ["elysium"],
     buildUrl: (c, t, s, v, sp, kind) => `https://elyscan.info/${explorerPath(kind, { def: "address" })}/${t}` },
-  { id: "elysium", name: "Elysium", categories: ["explore"], chains: ["elysium"],
-    buildUrl: (c, t, s, v, sp, kind) => `https://elysium.kinetiq.xyz/${explorerPath(kind, { tx: "TX", block: "BLOCK", def: "ADDRESS" })}/${t}` },
   { id: "suiscan", name: "Suiscan", categories: ["explore"], chains: ["sui"],
     buildUrl: (c, t, s, v, sp, kind) => `https://suiscan.xyz/mainnet/${explorerPath(kind, { block: "checkpoint", def: "coin" })}/${t}` },
   { id: "tronscan", name: "Tronscan", categories: ["explore"], chains: ["tron"],
@@ -205,7 +206,7 @@ const PLATFORMS = [
   { id: "dextools", name: "DEXTools", categories: ["chart"], chains: ["sol", "sui", "tron", "ton", ...ALL_EVM], params: ["maker"],
     resolveChain: (c) => resolveSlug({ eth: "ether", bsc: "bnb" }, c),
     buildUrl: (c, t, s) => `https://www.dextools.io/app/en/${s}/pair-explorer/${t}` },
-  { id: "birdeye", name: "Birdeye", categories: ["chart"], chains: ["sol", "eth", "base", "bsc", "arb", "op", "avax", "sui"],
+  { id: "birdeye", name: "Birdeye", categories: ["chart"], chains: ["sol", "eth", "base", "bsc", "arb", "op", "avax", "sui", "matic", "mantle", "hyperevm", "monad", "megaeth", "robinhood"],
     resolveChain: (c) => resolveSlug(null, c),
     buildUrl: (c, t, s) => `https://birdeye.so/token/${t}?chain=${s}` },
   { id: "defined", name: "Defined", categories: ["chart"], chains: ["sol", "sui", "tron", ...ALL_EVM], params: ["quoteToken", "preferredQuoteTokenAddress", "maker"],
